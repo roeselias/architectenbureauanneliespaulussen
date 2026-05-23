@@ -18,18 +18,16 @@
     --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --nav-height: 80px;
   }
-
+ 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
-
   body {
     font-family: 'Montserrat', sans-serif;
     background: var(--white);
     color: var(--black);
     overflow-x: hidden;
   }
-
+ 
   /* ── NAV ── */
   nav {
     position: fixed;
@@ -45,22 +43,20 @@
     transition: box-shadow 0.3s;
   }
   nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
-
+ 
   .logo {
     height: 48px;
     cursor: pointer;
-    /* logo has black bg, invert to get white bg version */
   }
-
+ 
+  /* Desktop nav links */
   .nav-links {
     display: flex;
     align-items: center;
     gap: 40px;
     list-style: none;
   }
-
   .nav-links > li { position: relative; }
-
   .nav-links a {
     text-decoration: none;
     color: var(--black);
@@ -82,11 +78,11 @@
   }
   .nav-links a:hover { color: var(--accent); }
   .nav-links a:hover::after { width: 100%; }
-
-  /* Dropdown */
+ 
+  /* Dropdown – fixed so there's no gap between trigger and menu */
   .dropdown {
     position: absolute;
-    top: calc(100% + 20px);
+    top: 100%;
     left: 50%;
     transform: translateX(-50%);
     background: var(--white);
@@ -94,8 +90,17 @@
     min-width: 160px;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.2s, transform 0.2s;
-    transform-origin: top center;
+    transition: opacity 0.2s;
+    /* padding-top creates invisible bridge so mouse can travel down */
+    padding-top: 20px;
+    margin-top: 0;
+  }
+  /* Invisible bridge above dropdown */
+  .dropdown::before {
+    content: '';
+    position: absolute;
+    top: -20px; left: 0; right: 0;
+    height: 20px;
   }
   .nav-links li:hover .dropdown {
     opacity: 1;
@@ -111,34 +116,92 @@
   .dropdown a:last-child { border-bottom: none; }
   .dropdown a::after { display: none; }
   .dropdown a:hover { background: var(--grey); color: var(--accent); }
-
+ 
+  /* ── Hamburger (mobile) ── */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 26px; height: 18px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    z-index: 1100;
+  }
+  .hamburger span {
+    display: block;
+    height: 2px;
+    background: var(--black);
+    border-radius: 2px;
+    transition: all 0.35s ease;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+ 
+  /* Mobile nav overlay */
+  .mobile-nav {
+    display: none;
+    position: fixed;
+    inset: 0;
+    top: var(--nav-height);
+    background: var(--white);
+    z-index: 999;
+    padding: 40px 32px;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid var(--grey-mid);
+    overflow-y: auto;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a {
+    text-decoration: none;
+    color: var(--black);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--grey-mid);
+    transition: color 0.2s;
+  }
+  .mobile-nav a:hover { color: var(--accent); }
+  .mobile-nav .mobile-sub {
+    padding-left: 20px;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--text-light);
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--grey-mid);
+  }
+  .mobile-nav .mobile-sub:hover { color: var(--accent); }
+ 
   /* ── PAGES ── */
   .page { display: none; min-height: 100vh; padding-top: var(--nav-height); }
   .page.active { display: block; }
-
+ 
   /* ── SCROLL REVEAL ── */
   .reveal {
     opacity: 0;
     transform: translateY(30px);
     transition: opacity 0.7s ease, transform 0.7s ease;
   }
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+ 
   /* ══════════════════════════════
      HOME – SLIDESHOW
   ══════════════════════════════ */
   #home { padding-top: 0; }
-
+ 
   .slideshow {
     position: relative;
     height: 100vh;
     overflow: hidden;
     background: #1a1a1a;
   }
-
+ 
   .slide {
     position: absolute;
     inset: 0;
@@ -148,38 +211,18 @@
     background-position: center;
   }
   .slide.active { opacity: 1; }
-
-  /* Placeholder slides with gradient backgrounds (replace src with real photos) */
-  .slide-1 {
-  background-image: url('images/slide1.jpg');
-  background-size: cover;
-  background-position: center;
-}
-  
-  .slide-2 {
-  background-image: url('images/slide2.jpg');
-  background-size: cover;
-  background-position: center;
-}
-  
-  .slide-3 {
-  background-image: url('images/slide3.jpg');
-  background-size: cover;
-  background-position: center;
-}
-  
-  .slide-4 {
-  background-image: url('images/slide4.jpg');
-  background-size: cover;
-  background-position: center;
-}
-
+ 
+  .slide-1 { background-image: url('images/slide1.jpg'); background-size: cover; background-position: center; background-color: #2a2a2a; }
+  .slide-2 { background-image: url('images/slide2.jpg'); background-size: cover; background-position: center; background-color: #282828; }
+  .slide-3 { background-image: url('images/slide3.jpg'); background-size: cover; background-position: center; background-color: #252525; }
+  .slide-4 { background-image: url('images/slide4.jpg'); background-size: cover; background-position: center; background-color: #232323; }
+ 
   .slide-overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.5) 100%);
   }
-
+ 
   .slide-caption {
     position: absolute;
     bottom: 60px;
@@ -207,7 +250,7 @@
     transition: opacity 0.8s 0.5s;
   }
   .slide.active .slide-caption p { opacity: 1; }
-
+ 
   .slide-dots {
     position: absolute;
     bottom: 30px;
@@ -223,26 +266,8 @@
     cursor: pointer;
     transition: background 0.3s, transform 0.3s;
   }
-  .slide-dot.active {
-    background: var(--accent);
-    transform: scale(1.4);
-  }
-
-  .slide-placeholder-text {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    color: rgba(255,255,255,0.15);
-    font-size: 13px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    gap: 8px;
-  }
-  .slide-placeholder-text span { font-size: 40px; }
-
+  .slide-dot.active { background: var(--accent); transform: scale(1.4); }
+ 
   /* ══════════════════════════════
      PROJECTEN OVERZICHT
   ══════════════════════════════ */
@@ -257,14 +282,14 @@
     letter-spacing: -1px;
   }
   .page-header h2 span { color: var(--accent); font-style: italic; }
-
+ 
   .projects-overview {
     display: grid;
     grid-template-columns: 1fr 1fr;
     height: calc(100vh - var(--nav-height) - 161px);
     min-height: 400px;
   }
-
+ 
   .project-category {
     position: relative;
     overflow: hidden;
@@ -272,7 +297,7 @@
     background: #1a1a1a;
   }
   .project-category:first-child { border-right: 1px solid var(--white); }
-
+ 
   .project-category-bg {
     position: absolute;
     inset: 0;
@@ -281,19 +306,19 @@
     transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   .cat-nieuwbouw {
-  background-image: url('images/cat-nieuwbouw.jpg');
-  background-size: cover;
-  background-position: center;
-}
-  
+    background-image: url('images/cat-nieuwbouw.jpg');
+    background-size: cover;
+    background-position: center;
+    background-color: #3a3a3a;
+  }
   .cat-renovatie {
-  background-image: url('images/cat-renovatie.jpg');
-  background-size: cover;
-  background-position: center;
-}
-  
+    background-image: url('images/cat-renovatie.jpg');
+    background-size: cover;
+    background-position: center;
+    background-color: #2e2e2e;
+  }
   .project-category:hover .project-category-bg { transform: scale(1.04); }
-
+ 
   .project-category-overlay {
     position: absolute;
     inset: 0;
@@ -303,7 +328,7 @@
   .project-category:hover .project-category-overlay {
     background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.1) 100%);
   }
-
+ 
   .project-category-label {
     position: absolute;
     bottom: 50px;
@@ -330,21 +355,12 @@
     transition: transform 0.3s;
   }
   .project-category:hover .project-category-label p::after { transform: translateX(6px); }
-
-  .cat-placeholder {
-    display: flex; align-items: center; justify-content: center;
-    height: 100%;
-    color: rgba(255,255,255,0.1);
-    font-size: 12px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-  }
-
+ 
   /* ══════════════════════════════
      FOTO GRID (Nieuwbouw / Renovatie)
   ══════════════════════════════ */
   .photo-grid-page .page-header { margin-bottom: 0; }
-
+ 
   .back-btn {
     display: inline-flex;
     align-items: center;
@@ -361,14 +377,14 @@
   }
   .back-btn:hover { color: var(--accent); }
   .back-btn::before { content: '←'; font-size: 14px; }
-
+ 
   .photo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 3px;
     padding: 0 3px 3px;
   }
-
+ 
   .photo-item {
     position: relative;
     aspect-ratio: 4/3;
@@ -376,7 +392,7 @@
     cursor: pointer;
     background: #e8e8e8;
   }
-
+ 
   .photo-item-bg {
     width: 100%; height: 100%;
     background-size: cover;
@@ -384,7 +400,7 @@
     transition: transform 0.5s var(--transition);
   }
   .photo-item:hover .photo-item-bg { transform: scale(1.06); }
-
+ 
   .photo-item-overlay {
     position: absolute;
     inset: 0;
@@ -395,7 +411,7 @@
     padding: 20px;
   }
   .photo-item:hover .photo-item-overlay { background: rgba(0,0,0,0.45); }
-
+ 
   .photo-item-label {
     color: white;
     opacity: 0;
@@ -415,121 +431,210 @@
     color: var(--accent-light);
     margin-top: 2px;
   }
-
-  /* Placeholder kleuren voor foto items */
-  .ph-1 { background: #c8c8c8; }
-  .ph-2 { background: #d4d4d4; }
-  .ph-3 { background: #b8b8b8; }
-  .ph-4 { background: #cfcfcf; }
-  .ph-5 { background: #c0c0c0; }
-  .ph-6 { background: #d8d8d8; }
-  .ph-7 { background: #bdbdbd; }
-  .ph-8 { background: #cacaca; }
-  .ph-9 { background: #d0d0d0; }
-
-  .photo-placeholder-inner {
-    width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
-    flex-direction: column;
-    gap: 6px;
-    color: rgba(0,0,0,0.3);
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-  .photo-placeholder-inner span { font-size: 28px; opacity: 0.5; }
-
+ 
+  /* Project image placeholders – ready for real images */
+  .ph-1 { background-color: #c8c8c8; }
+  .ph-2 { background-color: #d4d4d4; }
+  .ph-3 { background-color: #b8b8b8; }
+  .ph-4 { background-color: #cfcfcf; }
+  .ph-5 { background-color: #c0c0c0; }
+  .ph-6 { background-color: #d8d8d8; }
+  .ph-7 { background-color: #bdbdbd; }
+  .ph-8 { background-color: #cacaca; }
+  .ph-9 { background-color: #d0d0d0; }
+ 
   /* ══════════════════════════════
-     PROJECT LIGHTBOX / SLIDESHOW
+     PROJECT DETAIL VIEWER (nieuw design)
   ══════════════════════════════ */
-  .lightbox {
+  .project-viewer {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.95);
-    z-index: 2000;
+    top: var(--nav-height);
+    background: #111;
+    z-index: 900;
+    flex-direction: row;
+  }
+  .project-viewer.open { display: flex; }
+ 
+  /* Left thumbnail strip */
+  .viewer-strip {
+    width: 200px;
+    flex-shrink: 0;
+    background: #1a1a1a;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 20px 12px;
+    border-right: 1px solid #2a2a2a;
+    scrollbar-width: thin;
+    scrollbar-color: #333 #1a1a1a;
+  }
+  .viewer-strip::-webkit-scrollbar { width: 4px; }
+  .viewer-strip::-webkit-scrollbar-track { background: #1a1a1a; }
+  .viewer-strip::-webkit-scrollbar-thumb { background: #444; border-radius: 2px; }
+ 
+  .viewer-thumb {
+    position: relative;
+    aspect-ratio: 4/3;
+    cursor: pointer;
+    border-radius: 3px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid transparent;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  .viewer-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .viewer-thumb-placeholder {
+    width: 100%; height: 100%;
+    background: #2e2e2e;
+    display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
+    color: rgba(255,255,255,0.15);
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
   }
-  .lightbox.open { display: flex; }
-
-  .lightbox-header {
+  .viewer-thumb.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 14px rgba(192, 132, 160, 0.55);
+  }
+  .viewer-thumb-num {
     position: absolute;
-    top: 0; left: 0; right: 0;
-    padding: 24px 40px;
+    bottom: 4px; right: 6px;
+    font-size: 9px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.5px;
+  }
+ 
+  /* Right main view */
+  .viewer-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+ 
+  .viewer-topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 16px 28px;
+    background: #111;
+    border-bottom: 1px solid #222;
+    flex-shrink: 0;
   }
-  .lightbox-title {
+  .viewer-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    cursor: pointer;
+    background: none;
+    border: none;
+    transition: color 0.25s;
+  }
+  .viewer-back:hover { color: var(--accent); }
+  .viewer-back::before { content: '←'; font-size: 13px; }
+ 
+  .viewer-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 300;
     color: white;
+    letter-spacing: 0.5px;
   }
-  .lightbox-close {
-    background: none; border: none;
-    color: white; font-size: 24px;
-    cursor: pointer;
-    width: 40px; height: 40px;
-    display: flex; align-items: center; justify-content: center;
-    transition: color 0.3s;
+  .viewer-counter {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.35);
   }
-  .lightbox-close:hover { color: var(--accent); }
-
-  .lightbox-img-wrap {
-    width: 80vw;
-    max-height: 70vh;
+ 
+  .viewer-img-area {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    padding: 24px;
+    overflow: hidden;
   }
-
-  .lightbox-img {
-    max-width: 100%;
-    max-height: 70vh;
-    object-fit: contain;
-    display: block;
-  }
-
-  .lightbox-placeholder {
-    width: 80vw;
-    height: 55vh;
-    background: #333;
-    display: flex; align-items: center; justify-content: center;
-    flex-direction: column;
-    color: rgba(255,255,255,0.2);
-    font-size: 12px;
-    letter-spacing: 2px;
-    gap: 10px;
-  }
-  .lightbox-placeholder span { font-size: 40px; }
-
-  .lightbox-nav {
+ 
+  .viewer-img-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
-    gap: 20px;
-    margin-top: 24px;
+    justify-content: center;
   }
-  .lightbox-btn {
-    background: none; border: 1px solid rgba(255,255,255,0.3);
-    color: white; width: 44px; height: 44px;
+ 
+  .viewer-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+    border-radius: 2px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  }
+ 
+  .viewer-img-placeholder {
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 16/10;
+    background: #222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    color: rgba(255,255,255,0.12);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border-radius: 3px;
+  }
+  .viewer-img-placeholder svg { opacity: 0.15; }
+ 
+  /* Prev / Next arrows over main image */
+  .viewer-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: white;
+    width: 44px; height: 44px;
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 18px;
-    transition: border-color 0.3s, background 0.3s;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 2px;
+    transition: background 0.25s, border-color 0.25s;
+    z-index: 10;
   }
-  .lightbox-btn:hover { border-color: var(--accent); background: var(--accent); }
-
-  .lightbox-counter {
-    color: rgba(255,255,255,0.5);
-    font-size: 11px;
-    letter-spacing: 2px;
-    min-width: 60px;
-    text-align: center;
+  .viewer-arrow:hover { background: var(--accent); border-color: var(--accent); }
+  .viewer-arrow.prev { left: 8px; }
+  .viewer-arrow.next { right: 8px; }
+ 
+  /* Mobile viewer */
+  @media (max-width: 768px) {
+    .viewer-strip { width: 80px; padding: 10px 6px; gap: 3px; }
+    .viewer-topbar { padding: 12px 16px; }
+    .viewer-title { font-size: 15px; }
+    .viewer-counter { display: none; }
+    .viewer-img-area { padding: 12px 8px; }
+    .viewer-arrow { width: 36px; height: 36px; font-size: 14px; }
   }
-
+ 
   /* ══════════════════════════════
      BUREAU
   ══════════════════════════════ */
@@ -539,12 +644,11 @@
     gap: 0;
     min-height: calc(100vh - var(--nav-height));
   }
-
+ 
   .bureau-text {
     padding: 80px 60px;
     border-right: 1px solid var(--grey-mid);
   }
-
   .bureau-text h2 {
     font-family: 'Cormorant Garamond', serif;
     font-size: 48px;
@@ -553,14 +657,12 @@
     line-height: 1.1;
   }
   .bureau-text h2 em { color: var(--accent); font-style: italic; }
-
   .bureau-text p {
     font-size: 14px;
     line-height: 1.9;
     color: #444;
     margin-bottom: 24px;
   }
-
   .bureau-text .lead {
     font-family: 'Cormorant Garamond', serif;
     font-size: 22px;
@@ -569,15 +671,13 @@
     line-height: 1.6;
     margin-bottom: 32px;
   }
-
+ 
   .bureau-aside {
     padding: 80px 60px;
     background: var(--grey);
   }
-
-  .info-block {
-    margin-bottom: 48px;
-  }
+ 
+  .info-block { margin-bottom: 48px; }
   .info-block h4 {
     font-size: 10px;
     letter-spacing: 2.5px;
@@ -587,22 +687,14 @@
     padding-bottom: 10px;
     border-bottom: 1px solid var(--accent-light);
   }
-  .info-block p {
-    font-size: 13px;
-    line-height: 1.8;
-    color: #555;
-  }
-
-  .diensten-list {
-    list-style: none;
-  }
+  .info-block p { font-size: 13px; line-height: 1.8; color: #555; }
+ 
+  .diensten-list { list-style: none; }
   .diensten-list li {
     font-size: 13px;
     padding: 10px 0;
     border-bottom: 1px solid var(--grey-mid);
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    display: flex; align-items: center; gap: 10px;
     color: #444;
   }
   .diensten-list li::before {
@@ -612,7 +704,7 @@
     background: var(--accent);
     flex-shrink: 0;
   }
-
+ 
   /* ══════════════════════════════
      CONTACT
   ══════════════════════════════ */
@@ -621,7 +713,7 @@
     grid-template-columns: 1fr 1fr;
     min-height: calc(100vh - var(--nav-height));
   }
-
+ 
   .contact-info {
     padding: 80px 60px;
     background: var(--grey);
@@ -634,10 +726,8 @@
     line-height: 1.1;
   }
   .contact-info h2 em { color: var(--accent); font-style: italic; }
-
-  .contact-detail {
-    margin-bottom: 36px;
-  }
+ 
+  .contact-detail { margin-bottom: 36px; }
   .contact-detail h4 {
     font-size: 10px;
     letter-spacing: 2.5px;
@@ -654,20 +744,16 @@
     transition: color 0.3s;
   }
   .contact-detail a:hover { color: var(--accent); }
-
-  .contact-form-wrap {
-    padding: 80px 60px;
-  }
+ 
+  .contact-form-wrap { padding: 80px 60px; }
   .contact-form-wrap h3 {
     font-family: 'Cormorant Garamond', serif;
     font-size: 32px;
     font-weight: 300;
     margin-bottom: 40px;
   }
-
-  .form-group {
-    margin-bottom: 28px;
-  }
+ 
+  .form-group { margin-bottom: 28px; }
   .form-group label {
     display: block;
     font-size: 10px;
@@ -693,9 +779,7 @@
   }
   .form-group input:focus,
   .form-group textarea:focus { border-color: var(--accent); }
-
-  .form-group textarea { min-height: 100px; }
-
+ 
   .submit-btn {
     display: inline-flex;
     align-items: center;
@@ -714,7 +798,7 @@
   }
   .submit-btn:hover { background: var(--accent); gap: 18px; }
   .submit-btn::after { content: '→'; }
-
+ 
   /* ══════════════════════════════
      FOOTER
   ══════════════════════════════ */
@@ -730,7 +814,7 @@
   }
   footer a { color: rgba(255,255,255,0.4); text-decoration: none; }
   footer a:hover { color: var(--accent); }
-
+ 
   /* ══════════════════════════════
      ANIMATIONS
   ══════════════════════════════ */
@@ -738,23 +822,15 @@
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
-
-  .stagger > * {
-    opacity: 0;
-    animation: fadeInUp 0.6s forwards;
-  }
+  .stagger > * { opacity: 0; animation: fadeInUp 0.6s forwards; }
   .stagger > *:nth-child(1) { animation-delay: 0.1s; }
   .stagger > *:nth-child(2) { animation-delay: 0.2s; }
   .stagger > *:nth-child(3) { animation-delay: 0.3s; }
   .stagger > *:nth-child(4) { animation-delay: 0.4s; }
   .stagger > *:nth-child(5) { animation-delay: 0.5s; }
-
+ 
   /* Form success */
-  .form-success {
-    display: none;
-    text-align: center;
-    padding: 40px;
-  }
+  .form-success { display: none; text-align: center; padding: 40px; }
   .form-success.show { display: block; }
   .form-success h3 {
     font-family: 'Cormorant Garamond', serif;
@@ -762,27 +838,43 @@
     color: var(--accent);
     margin-bottom: 12px;
   }
-
+ 
   /* ══════════════════════════════
-     MOBILE
+     MOBILE RESPONSIVE
   ══════════════════════════════ */
   @media (max-width: 768px) {
-    nav { padding: 0 24px; }
-    .nav-links { gap: 20px; }
-    .bureau-content, .contact-layout { grid-template-columns: 1fr; }
-    .projects-overview { grid-template-columns: 1fr; height: auto; }
-    .project-category { height: 50vw; }
+    /* Nav */
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+ 
+    /* Page headers */
     .page-header { padding: 40px 24px 24px; }
     .back-btn { padding: 30px 24px 10px; }
+ 
+    /* Projecten overview */
+    .projects-overview { grid-template-columns: 1fr; height: auto; }
+    .project-category { height: 55vw; }
+ 
+    /* Photo grid */
     .photo-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+ 
+    /* Bureau & Contact */
+    .bureau-content, .contact-layout { grid-template-columns: 1fr; }
     .bureau-text, .bureau-aside, .contact-info, .contact-form-wrap { padding: 40px 24px; }
+ 
+    /* Slideshow caption */
     .slide-caption h1 { font-size: 36px; }
     .slide-caption { left: 24px; bottom: 40px; }
+    .slide-dots { right: 24px; }
+ 
+    /* Footer */
+    footer { padding: 24px 20px; flex-direction: column; gap: 8px; text-align: center; }
   }
 </style>
 </head>
 <body>
-
+ 
 <!-- ── NAVIGATION ── -->
 <nav id="navbar">
   <img
@@ -796,7 +888,8 @@
     <span style="color:var(--accent)">annelies</span><br>
     <span style="font-size:14px; letter-spacing:2px;">paulussen</span>
   </div>
-
+ 
+  <!-- Desktop links -->
   <ul class="nav-links">
     <li><a href="#" onclick="showPage('home'); return false;">Home</a></li>
     <li>
@@ -809,8 +902,23 @@
     <li><a href="#" onclick="showPage('bureau'); return false;">Bureau</a></li>
     <li><a href="#" onclick="showPage('contact'); return false;">Contact</a></li>
   </ul>
+ 
+  <!-- Hamburger (mobile) -->
+  <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
-
+ 
+<!-- Mobile nav overlay -->
+<nav class="mobile-nav" id="mobileNav">
+  <a href="#" class="mobile-sub" onclick="showPage('home'); closeMobileNav(); return false;">Home</a>
+  <a href="#" class="mobile-sub" onclick="showPage('projecten'); closeMobileNav(); return false;">Projecten</a>
+  <a href="#" class="mobile-sub" style="padding-left:36px; font-size:10px;" onclick="showPage('nieuwbouw'); closeMobileNav(); return false;">↳ Nieuwbouw</a>
+  <a href="#" class="mobile-sub" style="padding-left:36px; font-size:10px;" onclick="showPage('renovatie'); closeMobileNav(); return false;">↳ Renovatie</a>
+  <a href="#" class="mobile-sub" onclick="showPage('bureau'); closeMobileNav(); return false;">Bureau</a>
+  <a href="#" class="mobile-sub" onclick="showPage('contact'); closeMobileNav(); return false;">Contact</a>
+</nav>
+ 
 <!-- ══════════════════════════════
      HOME
 ══════════════════════════════ -->
@@ -826,7 +934,7 @@
     <div class="slide slide-2">
       <div class="slide-overlay"></div>
       <div class="slide-caption">
-        <h1>Nieuwbouw<br>& Renovatie</h1>
+        <h1>Nieuwbouw<br>&amp; Renovatie</h1>
         <p>Maatwerk in elke stijl</p>
       </div>
     </div>
@@ -846,13 +954,13 @@
     </div>
     <div class="slide-dots" id="mainDots"></div>
   </div>
-
+ 
   <footer>
     <span>© 2026 Annelies Paulussen Architectenbureau bvba</span>
     <a href="#" onclick="showPage('contact'); return false;">Contact</a>
   </footer>
 </div>
-
+ 
 <!-- ══════════════════════════════
      PROJECTEN OVERVIEW
 ══════════════════════════════ -->
@@ -862,9 +970,7 @@
   </div>
   <div class="projects-overview">
     <div class="project-category" onclick="showPage('nieuwbouw')">
-      <div class="project-category-bg cat-nieuwbouw">
-        <div class="cat-placeholder">Nieuwbouw foto</div>
-      </div>
+      <div class="project-category-bg cat-nieuwbouw"></div>
       <div class="project-category-overlay"></div>
       <div class="project-category-label">
         <h3>Nieuwbouw</h3>
@@ -872,9 +978,7 @@
       </div>
     </div>
     <div class="project-category" onclick="showPage('renovatie')">
-      <div class="project-category-bg cat-renovatie">
-        <div class="cat-placeholder">Renovatie foto</div>
-      </div>
+      <div class="project-category-bg cat-renovatie"></div>
       <div class="project-category-overlay"></div>
       <div class="project-category-label">
         <h3>Renovatie</h3>
@@ -883,11 +987,11 @@
     </div>
   </div>
   <footer>
-    <span>© 2024 Annelies Paulussen Architectenbureau bvba</span>
+    <span>© 2026 Annelies Paulussen Architectenbureau bvba</span>
     <a href="#" onclick="showPage('contact'); return false;">Contact</a>
   </footer>
 </div>
-
+ 
 <!-- ══════════════════════════════
      NIEUWBOUW
 ══════════════════════════════ -->
@@ -896,15 +1000,13 @@
   <div class="page-header reveal" style="padding-top: 0; padding-bottom: 30px;">
     <h2><em>Nieuwbouw</em></h2>
   </div>
-  <div class="photo-grid" id="nieuwbouwGrid">
-    <!-- Gegenereerd via JS -->
-  </div>
+  <div class="photo-grid" id="nieuwbouwGrid"></div>
   <footer style="margin-top: 3px;">
-    <span>© 2024 Annelies Paulussen Architectenbureau bvba</span>
+    <span>© 2026 Annelies Paulussen Architectenbureau bvba</span>
     <a href="#" onclick="showPage('contact'); return false;">Contact</a>
   </footer>
 </div>
-
+ 
 <!-- ══════════════════════════════
      RENOVATIE
 ══════════════════════════════ -->
@@ -913,15 +1015,13 @@
   <div class="page-header reveal" style="padding-top: 0; padding-bottom: 30px;">
     <h2><em>Renovatie</em></h2>
   </div>
-  <div class="photo-grid" id="renovatieGrid">
-    <!-- Gegenereerd via JS -->
-  </div>
+  <div class="photo-grid" id="renovatieGrid"></div>
   <footer style="margin-top: 3px;">
-    <span>© 2024 Annelies Paulussen Architectenbureau bvba</span>
+    <span>© 2026 Annelies Paulussen Architectenbureau bvba</span>
     <a href="#" onclick="showPage('contact'); return false;">Contact</a>
   </footer>
 </div>
-
+ 
 <!-- ══════════════════════════════
      BUREAU
 ══════════════════════════════ -->
@@ -933,26 +1033,26 @@
       <p class="reveal">Met een uitgebreide expertise in zowel nieuwbouw als renovatieprojecten begeleiden wij u van het eerste gesprek tot de oplevering van uw project. Wij geloven in een nauwe samenwerking met onze klanten, waarbij uw wensen en noden centraal staan.</p>
       <p class="reveal">Elk project wordt met de grootste zorg en aandacht voor detail uitgewerkt. Of het nu gaat om een gezinswoning, een bedrijfsgebouw of de verbouwing van een bestaand pand: wij gaan steeds voor een kwalitatief en tijdloos resultaat dat perfect aansluit bij uw persoonlijke stijl en budget.</p>
       <p class="reveal">Ons bureau combineert een moderne aanpak met een diepgaand respect voor de omgeving en het bestaande karakter van een gebouw. Duurzaamheid en functionaliteit zijn voor ons geen bijzaak, maar een vanzelfsprekendheid.</p>
-      <p class="reveal">Annelies Paulussen is architect en beëdigd schatter. Na haar studies aan de Hogeschool voor Wetenschap & Kunst (Sint-Lucas) behaalde zij haar masterdiploma en richtte zij haar eigen bureau op. Met jarenlange ervaring staat zij garant voor een professionele en persoonlijke begeleiding doorheen het volledige bouwproces.</p>
-      <p class="reveal">Wij nemen de volledige coördinatie op ons: van het ontwerp en de vergunningsaanvraag tot de opvolging van de werken op de werf. Zo heeft u als bouwheer zo weinig mogelijk zorgen, en kunt u vol vertrouwen toekijken hoe uw droom werkelijkheid wordt.</p>
+      <p class="reveal">Annelies Paulussen is architect en beëdigd schatter. Na haar studies aan de Hogeschool voor Wetenschap &amp; Kunst (Sint-Lucas) behaalde zij haar masterdiploma en richtte zij haar eigen bureau op.</p>
+      <p class="reveal">Wij nemen de volledige coördinatie op ons: van het ontwerp en de vergunningsaanvraag tot de opvolging van de werken op de werf.</p>
     </div>
     <div class="bureau-aside">
       <div class="info-block reveal">
         <h4>Onze diensten</h4>
         <ul class="diensten-list">
           <li>Architectuurontwerp nieuwbouw</li>
-          <li>Renovatie & verbouwing</li>
+          <li>Renovatie &amp; verbouwing</li>
           <li>Interieurarchitectuur</li>
           <li>Stedenbouwkundige vergunningen</li>
           <li>Energieprestatiecertificaten (EPC)</li>
           <li>Beëdigde schattingen</li>
-          <li>Werfopvolging & coördinatie</li>
+          <li>Werfopvolging &amp; coördinatie</li>
           <li>3D-visualisaties</li>
         </ul>
       </div>
       <div class="info-block reveal">
         <h4>Werkwijze</h4>
-        <p>Van een eerste vrijblijvend gesprek tot de definitieve oplevering begeleiden wij u stap voor stap. Transparante communicatie en eerlijk advies zijn voor ons de basis van elke samenwerking.</p>
+        <p>Van een eerste vrijblijvend gesprek tot de definitieve oplevering begeleiden wij u stap voor stap.</p>
       </div>
       <div class="info-block reveal">
         <h4>Erkenning</h4>
@@ -961,11 +1061,11 @@
     </div>
   </div>
   <footer>
-    <span>© 2024 Annelies Paulussen Architectenbureau bvba</span>
+    <span>© 2026 Annelies Paulussen Architectenbureau bvba</span>
     <a href="#" onclick="showPage('contact'); return false;">Contact</a>
   </footer>
 </div>
-
+ 
 <!-- ══════════════════════════════
      CONTACT
 ══════════════════════════════ -->
@@ -994,7 +1094,7 @@
         <p>BE 0000.000.000</p>
       </div>
     </div>
-
+ 
     <div class="contact-form-wrap">
       <h3 class="reveal">Stuur ons een bericht</h3>
       <div id="contactFormWrap">
@@ -1010,10 +1110,6 @@
           <label>Onderwerp</label>
           <input type="text" id="cOnderwerp" placeholder="Waarmee kunnen wij u helpen?">
         </div>
-        <div class="form-group reveal">
-          <label>Bericht</label>
-          <textarea id="cBericht" placeholder="Vertel ons meer over uw project of vraag..."></textarea>
-        </div>
         <button class="submit-btn reveal" onclick="submitForm()">Versturen</button>
       </div>
       <div class="form-success" id="formSuccess">
@@ -1023,75 +1119,212 @@
     </div>
   </div>
   <footer>
-    <span>© 2024 Annelies Paulussen Architectenbureau bvba</span>
+    <span>© 2026 Annelies Paulussen Architectenbureau bvba</span>
     <a href="mailto:info@annelies-paulussen.be">info@annelies-paulussen.be</a>
   </footer>
 </div>
-
+ 
 <!-- ══════════════════════════════
-     LIGHTBOX
+     PROJECT VIEWER (nieuw design)
 ══════════════════════════════ -->
-<div class="lightbox" id="lightbox">
-  <div class="lightbox-header">
-    <span class="lightbox-title" id="lightboxTitle">Project</span>
-    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-  </div>
-  <div class="lightbox-img-wrap">
-    <div class="lightbox-placeholder" id="lightboxPlaceholder">
-      <span>🏛</span>
-      <span id="lightboxPlaceholderText">Projectfoto</span>
+<div class="project-viewer" id="projectViewer">
+  <!-- Left thumbnail strip -->
+  <div class="viewer-strip" id="viewerStrip"></div>
+ 
+  <!-- Right main area -->
+  <div class="viewer-main">
+    <div class="viewer-topbar">
+      <button class="viewer-back" id="viewerBack" onclick="closeViewer()">Terug</button>
+      <span class="viewer-title" id="viewerTitle">Project</span>
+      <span class="viewer-counter" id="viewerCounter">1 / 5</span>
+    </div>
+    <div class="viewer-img-area">
+      <button class="viewer-arrow prev" onclick="viewerPrev()">&#8592;</button>
+      <div class="viewer-img-wrap" id="viewerImgWrap">
+        <div class="viewer-img-placeholder" id="viewerImgPlaceholder">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <span id="viewerPlaceholderLabel">Foto</span>
+        </div>
+        <img class="viewer-img" id="viewerImg" src="" alt="" style="display:none;">
+      </div>
+      <button class="viewer-arrow next" onclick="viewerNext()">&#8594;</button>
     </div>
   </div>
-  <div class="lightbox-nav">
-    <button class="lightbox-btn" onclick="lightboxPrev()">←</button>
-    <span class="lightbox-counter" id="lightboxCounter">1 / 5</span>
-    <button class="lightbox-btn" onclick="lightboxNext()">→</button>
-  </div>
 </div>
-
+ 
 <!-- ══════════════════════════════
      JAVASCRIPT
 ══════════════════════════════ -->
 <script>
-// ── DATA: Projecten (vervang door echte data) ──
+// ── DATA ──
 const nieuwbouwProjecten = [
-  { naam: 'Villa Kempen', locatie: 'Geel', fotos: 5, ph: 'ph-1' },
-  { naam: 'Woning Janssen', locatie: 'Mol', fotos: 4, ph: 'ph-2' },
-  { naam: 'Moderne gezinswoning', locatie: 'Herentals', fotos: 6, ph: 'ph-3' },
-  { naam: 'Halfopen bebouwing', locatie: 'Lier', fotos: 3, ph: 'ph-4' },
-  { naam: 'Passiefwoning De Smedt', locatie: 'Turnhout', fotos: 5, ph: 'ph-5' },
-  { naam: 'Tijdloze villa', locatie: 'Kasterlee', fotos: 7, ph: 'ph-6' },
-  { naam: 'Landelijke nieuwbouw', locatie: 'Retie', fotos: 4, ph: 'ph-7' },
-  { naam: 'Strakke kubuswoning', locatie: 'Grobbendonk', fotos: 5, ph: 'ph-8' },
-  { naam: 'Energie-neutrale woning', locatie: 'Olen', fotos: 6, ph: 'ph-9' },
+  { naam: 'Villa Kempen', locatie: 'Geel', fotos: 5, ph: 'ph-1',
+    images: ['images/projecten/villa-kempen-1.jpg','images/projecten/villa-kempen-2.jpg','images/projecten/villa-kempen-3.jpg','images/projecten/villa-kempen-4.jpg','images/projecten/villa-kempen-5.jpg'] },
+  { naam: 'Woning Janssen', locatie: 'Mol', fotos: 4, ph: 'ph-2',
+    images: ['images/projecten/woning-janssen-1.jpg','images/projecten/woning-janssen-2.jpg','images/projecten/woning-janssen-3.jpg','images/projecten/woning-janssen-4.jpg'] },
+  { naam: 'Moderne gezinswoning', locatie: 'Herentals', fotos: 6, ph: 'ph-3',
+    images: ['images/projecten/gezinswoning-1.jpg','images/projecten/gezinswoning-2.jpg','images/projecten/gezinswoning-3.jpg','images/projecten/gezinswoning-4.jpg','images/projecten/gezinswoning-5.jpg','images/projecten/gezinswoning-6.jpg'] },
+  { naam: 'Halfopen bebouwing', locatie: 'Lier', fotos: 3, ph: 'ph-4',
+    images: ['images/projecten/halfopen-1.jpg','images/projecten/halfopen-2.jpg','images/projecten/halfopen-3.jpg'] },
+  { naam: 'Passiefwoning De Smedt', locatie: 'Turnhout', fotos: 5, ph: 'ph-5',
+    images: ['images/projecten/passiefwoning-1.jpg','images/projecten/passiefwoning-2.jpg','images/projecten/passiefwoning-3.jpg','images/projecten/passiefwoning-4.jpg','images/projecten/passiefwoning-5.jpg'] },
+  { naam: 'Tijdloze villa', locatie: 'Kasterlee', fotos: 7, ph: 'ph-6',
+    images: ['images/projecten/villa-kasterlee-1.jpg','images/projecten/villa-kasterlee-2.jpg','images/projecten/villa-kasterlee-3.jpg','images/projecten/villa-kasterlee-4.jpg','images/projecten/villa-kasterlee-5.jpg','images/projecten/villa-kasterlee-6.jpg','images/projecten/villa-kasterlee-7.jpg'] },
+  { naam: 'Landelijke nieuwbouw', locatie: 'Retie', fotos: 4, ph: 'ph-7',
+    images: ['images/projecten/landelijk-1.jpg','images/projecten/landelijk-2.jpg','images/projecten/landelijk-3.jpg','images/projecten/landelijk-4.jpg'] },
+  { naam: 'Strakke kubuswoning', locatie: 'Grobbendonk', fotos: 5, ph: 'ph-8',
+    images: ['images/projecten/kubus-1.jpg','images/projecten/kubus-2.jpg','images/projecten/kubus-3.jpg','images/projecten/kubus-4.jpg','images/projecten/kubus-5.jpg'] },
+  { naam: 'Energie-neutrale woning', locatie: 'Olen', fotos: 6, ph: 'ph-9',
+    images: ['images/projecten/energieneutraal-1.jpg','images/projecten/energieneutraal-2.jpg','images/projecten/energieneutraal-3.jpg','images/projecten/energieneutraal-4.jpg','images/projecten/energieneutraal-5.jpg','images/projecten/energieneutraal-6.jpg'] },
 ];
-
+ 
 const renovatieProjecten = [
-  { naam: 'Hoeve verbouwing', locatie: 'Vorselaar', fotos: 5, ph: 'ph-3' },
-  { naam: 'Stadsrenovatie', locatie: 'Mechelen', fotos: 4, ph: 'ph-1' },
-  { naam: 'Industrieel loft', locatie: 'Antwerpen', fotos: 6, ph: 'ph-6' },
-  { naam: 'Charmante fermette', locatie: 'Zoersel', fotos: 3, ph: 'ph-4' },
-  { naam: 'Totaalrenovatie rijwoning', locatie: 'Heist-op-den-Berg', fotos: 5, ph: 'ph-2' },
-  { naam: 'Herbestemming kantoor', locatie: 'Lier', fotos: 4, ph: 'ph-9' },
-  { naam: 'Uitbreiding gezinswoning', locatie: 'Geel', fotos: 5, ph: 'ph-7' },
-  { naam: 'Dakrenovatie met dakkapel', locatie: 'Turnhout', fotos: 3, ph: 'ph-5' },
+  { naam: 'Hoeve verbouwing', locatie: 'Vorselaar', fotos: 5, ph: 'ph-3',
+    images: ['images/projecten/hoeve-1.jpg','images/projecten/hoeve-2.jpg','images/projecten/hoeve-3.jpg','images/projecten/hoeve-4.jpg','images/projecten/hoeve-5.jpg'] },
+  { naam: 'Stadsrenovatie', locatie: 'Mechelen', fotos: 4, ph: 'ph-1',
+    images: ['images/projecten/stadsrenovatie-1.jpg','images/projecten/stadsrenovatie-2.jpg','images/projecten/stadsrenovatie-3.jpg','images/projecten/stadsrenovatie-4.jpg'] },
+  { naam: 'Industrieel loft', locatie: 'Antwerpen', fotos: 6, ph: 'ph-6',
+    images: ['images/projecten/loft-1.jpg','images/projecten/loft-2.jpg','images/projecten/loft-3.jpg','images/projecten/loft-4.jpg','images/projecten/loft-5.jpg','images/projecten/loft-6.jpg'] },
+  { naam: 'Charmante fermette', locatie: 'Zoersel', fotos: 3, ph: 'ph-4',
+    images: ['images/projecten/fermette-1.jpg','images/projecten/fermette-2.jpg','images/projecten/fermette-3.jpg'] },
+  { naam: 'Totaalrenovatie rijwoning', locatie: 'Heist-op-den-Berg', fotos: 5, ph: 'ph-2',
+    images: ['images/projecten/rijwoning-1.jpg','images/projecten/rijwoning-2.jpg','images/projecten/rijwoning-3.jpg','images/projecten/rijwoning-4.jpg','images/projecten/rijwoning-5.jpg'] },
+  { naam: 'Herbestemming kantoor', locatie: 'Lier', fotos: 4, ph: 'ph-9',
+    images: ['images/projecten/kantoor-1.jpg','images/projecten/kantoor-2.jpg','images/projecten/kantoor-3.jpg','images/projecten/kantoor-4.jpg'] },
+  { naam: 'Uitbreiding gezinswoning', locatie: 'Geel', fotos: 5, ph: 'ph-7',
+    images: ['images/projecten/uitbreiding-1.jpg','images/projecten/uitbreiding-2.jpg','images/projecten/uitbreiding-3.jpg','images/projecten/uitbreiding-4.jpg','images/projecten/uitbreiding-5.jpg'] },
+  { naam: 'Dakrenovatie met dakkapel', locatie: 'Turnhout', fotos: 3, ph: 'ph-5',
+    images: ['images/projecten/dakkapel-1.jpg','images/projecten/dakkapel-2.jpg','images/projecten/dakkapel-3.jpg'] },
 ];
-
-// ── Lightbox state ──
+ 
+// ── Viewer state ──
 let currentProject = null;
 let currentPhotoIndex = 0;
-
+let viewerSourcePage = 'projecten';
+ 
+// ── Build thumbnail strip ──
+function buildViewerStrip(project) {
+  const strip = document.getElementById('viewerStrip');
+  strip.innerHTML = '';
+  for (let i = 0; i < project.fotos; i++) {
+    const thumb = document.createElement('div');
+    thumb.className = 'viewer-thumb' + (i === 0 ? ' active' : '');
+    thumb.dataset.index = i;
+ 
+    const imgSrc = project.images && project.images[i] ? project.images[i] : null;
+    if (imgSrc) {
+      const img = document.createElement('img');
+      img.src = imgSrc;
+      img.alt = project.naam + ' foto ' + (i + 1);
+      img.loading = 'lazy';
+      thumb.appendChild(img);
+    } else {
+      const ph = document.createElement('div');
+      ph.className = 'viewer-thumb-placeholder';
+      ph.textContent = (i + 1);
+      thumb.appendChild(ph);
+    }
+ 
+    const num = document.createElement('span');
+    num.className = 'viewer-thumb-num';
+    num.textContent = (i + 1);
+    thumb.appendChild(num);
+ 
+    thumb.addEventListener('click', () => viewerGoTo(i));
+    strip.appendChild(thumb);
+  }
+}
+ 
+// ── Update main image ──
+function updateViewerMain() {
+  const project = currentProject;
+  const i = currentPhotoIndex;
+  const imgEl = document.getElementById('viewerImg');
+  const phEl = document.getElementById('viewerImgPlaceholder');
+  const label = document.getElementById('viewerPlaceholderLabel');
+  const counter = document.getElementById('viewerCounter');
+ 
+  counter.textContent = (i + 1) + ' / ' + project.fotos;
+ 
+  const imgSrc = project.images && project.images[i] ? project.images[i] : null;
+  if (imgSrc) {
+    imgEl.src = imgSrc;
+    imgEl.alt = project.naam + ' – foto ' + (i + 1);
+    imgEl.style.display = 'block';
+    phEl.style.display = 'none';
+  } else {
+    imgEl.style.display = 'none';
+    phEl.style.display = 'flex';
+    label.textContent = 'Foto ' + (i + 1) + ' — ' + project.naam;
+  }
+ 
+  // Highlight active thumb
+  document.querySelectorAll('.viewer-thumb').forEach((t, idx) => {
+    t.classList.toggle('active', idx === i);
+  });
+ 
+  // Scroll active thumb into view
+  const activeThumb = document.querySelector('.viewer-thumb.active');
+  if (activeThumb) activeThumb.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+ 
+// ── Open viewer ──
+function openViewer(project, sourcePage) {
+  currentProject = project;
+  currentPhotoIndex = 0;
+  viewerSourcePage = sourcePage || 'projecten';
+  document.getElementById('viewerTitle').textContent = project.naam + ' — ' + project.locatie;
+  buildViewerStrip(project);
+  updateViewerMain();
+  document.getElementById('projectViewer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+ 
+function closeViewer() {
+  document.getElementById('projectViewer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+ 
+function viewerGoTo(n) {
+  currentPhotoIndex = n;
+  updateViewerMain();
+}
+ 
+function viewerNext() {
+  viewerGoTo((currentPhotoIndex + 1) % currentProject.fotos);
+}
+ 
+function viewerPrev() {
+  viewerGoTo((currentPhotoIndex - 1 + currentProject.fotos) % currentProject.fotos);
+}
+ 
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('projectViewer').classList.contains('open')) return;
+  if (e.key === 'ArrowRight') viewerNext();
+  if (e.key === 'ArrowLeft') viewerPrev();
+  if (e.key === 'Escape') closeViewer();
+});
+ 
 // ── Render photo grids ──
-function renderGrid(containerId, projecten) {
+function renderGrid(containerId, projecten, sourcePage) {
   const grid = document.getElementById(containerId);
   grid.innerHTML = '';
   projecten.forEach((p, i) => {
     const item = document.createElement('div');
     item.className = 'photo-item reveal';
+ 
+    // Use real image if available, else colour placeholder
+    const coverSrc = p.images && p.images[0] ? p.images[0] : null;
+    const bgStyle = coverSrc
+      ? `background-image: url('${coverSrc}'); background-size: cover; background-position: center;`
+      : '';
+ 
     item.innerHTML = `
-      <div class="photo-item-bg ${p.ph}">
-        <div class="photo-placeholder-inner"><span>📐</span>${p.naam}</div>
-      </div>
+      <div class="photo-item-bg ${coverSrc ? '' : p.ph}" style="${bgStyle}"></div>
       <div class="photo-item-overlay">
         <div class="photo-item-label">
           <h4>${p.naam}</h4>
@@ -1099,54 +1332,13 @@ function renderGrid(containerId, projecten) {
         </div>
       </div>
     `;
-    item.addEventListener('click', () => openLightbox(p));
+    item.addEventListener('click', () => openViewer(p, sourcePage));
     grid.appendChild(item);
-    // staggered reveal
     setTimeout(() => item.classList.add('visible'), 100 + i * 60);
   });
 }
-
-// ── Lightbox ──
-function openLightbox(project) {
-  currentProject = project;
-  currentPhotoIndex = 0;
-  updateLightbox();
-  document.getElementById('lightbox').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function updateLightbox() {
-  document.getElementById('lightboxTitle').textContent = currentProject.naam + ' — ' + currentProject.locatie;
-  document.getElementById('lightboxPlaceholderText').textContent =
-    'Foto ' + (currentPhotoIndex + 1) + ' van ' + currentProject.naam;
-  document.getElementById('lightboxCounter').textContent =
-    (currentPhotoIndex + 1) + ' / ' + currentProject.fotos;
-}
-
-function lightboxNext() {
-  currentPhotoIndex = (currentPhotoIndex + 1) % currentProject.fotos;
-  updateLightbox();
-}
-
-function lightboxPrev() {
-  currentPhotoIndex = (currentPhotoIndex - 1 + currentProject.fotos) % currentProject.fotos;
-  updateLightbox();
-}
-
-// Keyboard nav
-document.addEventListener('keydown', e => {
-  if (!document.getElementById('lightbox').classList.contains('open')) return;
-  if (e.key === 'ArrowRight') lightboxNext();
-  if (e.key === 'ArrowLeft') lightboxPrev();
-  if (e.key === 'Escape') closeLightbox();
-});
-
-// ── Slideshow ──
+ 
+// ── Slideshow (auto-play) ──
 function initSlideshow(slideshowId, dotsId) {
   const ss = document.getElementById(slideshowId);
   if (!ss) return;
@@ -1154,8 +1346,7 @@ function initSlideshow(slideshowId, dotsId) {
   const dotsContainer = document.getElementById(dotsId);
   let current = 0;
   let timer;
-
-  // Create dots
+ 
   dotsContainer.innerHTML = '';
   slides.forEach((_, i) => {
     const dot = document.createElement('div');
@@ -1163,7 +1354,7 @@ function initSlideshow(slideshowId, dotsId) {
     dot.onclick = () => goTo(i);
     dotsContainer.appendChild(dot);
   });
-
+ 
   function goTo(n) {
     slides[current].classList.remove('active');
     dotsContainer.children[current].classList.remove('active');
@@ -1171,54 +1362,61 @@ function initSlideshow(slideshowId, dotsId) {
     slides[current].classList.add('active');
     dotsContainer.children[current].classList.add('active');
   }
-
+ 
   function next() { goTo((current + 1) % slides.length); }
-
   function start() { timer = setInterval(next, 5000); }
   function stop() { clearInterval(timer); }
-
+ 
   ss.addEventListener('mouseenter', stop);
   ss.addEventListener('mouseleave', start);
   start();
 }
-
+ 
+// ── Mobile nav ──
+function toggleMobileNav() {
+  const nav = document.getElementById('mobileNav');
+  const btn = document.getElementById('hamburger');
+  const open = nav.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+ 
+function closeMobileNav() {
+  document.getElementById('mobileNav').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.body.style.overflow = '';
+}
+ 
 // ── Page switching ──
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const page = document.getElementById(id);
   page.classList.add('active');
   window.scrollTo(0, 0);
-
-  // Init scroll reveals on new page
+  closeMobileNav();
   setTimeout(initReveal, 50);
-
-  // Render grids
-  if (id === 'nieuwbouw') renderGrid('nieuwbouwGrid', nieuwbouwProjecten);
-  if (id === 'renovatie') renderGrid('renovatieGrid', renovatieProjecten);
+  if (id === 'nieuwbouw') renderGrid('nieuwbouwGrid', nieuwbouwProjecten, 'nieuwbouw');
+  if (id === 'renovatie') renderGrid('renovatieGrid', renovatieProjecten, 'renovatie');
 }
-
+ 
 // ── Scroll reveal ──
 function initReveal() {
   const reveals = document.querySelectorAll('.page.active .reveal');
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('visible'); }
-    });
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { threshold: 0.12 });
   reveals.forEach(el => observer.observe(el));
-
-  // Immediately reveal visible ones
   reveals.forEach(el => {
     const rect = el.getBoundingClientRect();
     if (rect.top < window.innerHeight * 0.9) el.classList.add('visible');
   });
 }
-
+ 
 // ── Navbar scroll ──
 window.addEventListener('scroll', () => {
   document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10);
 });
-
+ 
 // ── Contact form ──
 function submitForm() {
   const naam = document.getElementById('cNaam').value.trim();
@@ -1230,7 +1428,7 @@ function submitForm() {
   document.getElementById('contactFormWrap').style.display = 'none';
   document.getElementById('formSuccess').classList.add('show');
 }
-
+ 
 // ── Init ──
 initSlideshow('mainSlideshow', 'mainDots');
 initReveal();
