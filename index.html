@@ -117,12 +117,13 @@
   .dropdown a::after { display: none; }
   .dropdown a:hover { background: var(--accent-light); color: var(--accent-dark); }
 
-  /* ── Hamburger (mobile) ── */
+  /* ── Hamburger button – hidden on desktop, shown on mobile ── */
   .hamburger {
     display: none;
     flex-direction: column;
     justify-content: space-between;
-    width: 28px; height: 20px;
+    width: 28px;
+    height: 20px;
     cursor: pointer;
     background: none;
     border: none;
@@ -135,97 +136,67 @@
     height: 2px;
     background: var(--black);
     border-radius: 2px;
-    transition: all 0.3s ease;
-    transform-origin: center;
+    transition: transform 0.3s ease, opacity 0.3s ease;
   }
   .hamburger.open span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
-  .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
   .hamburger.open span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
 
-  /* Dim overlay behind panel */
-  .mobile-nav-backdrop {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.35);
-    z-index: 1050;
-  }
-  .mobile-nav-backdrop.open { display: block; }
+  /* ── Mobile dropdown menu – drops down below the navbar ── */
+  /* Hidden on desktop, only shown inside the mobile media query */
+  .mobile-nav-backdrop { display: none; }
 
-  /* Slide-in panel from right */
   .mobile-nav {
+    display: none; /* overridden in media query */
     position: fixed;
-    top: 0; right: 0; bottom: 0;
-    width: min(320px, 85vw);
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
     background: var(--white);
     z-index: 1100;
-    display: flex;
     flex-direction: column;
-    transform: translateX(100%);
-    transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: -4px 0 40px rgba(0,0,0,0.12);
-    overflow-y: auto;
+    border-top: 2px solid var(--accent-light);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    /* Animate open/close */
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
-  .mobile-nav.open { transform: translateX(0); }
+  .mobile-nav.open {
+    max-height: 600px; /* large enough to fit all items */
+  }
 
-  /* Panel header */
-  .mobile-nav-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 28px;
-    height: var(--nav-height);
-    border-bottom: 1px solid var(--grey-mid);
-    flex-shrink: 0;
-  }
-  .mobile-nav-header span {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 14px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text-light);
-  }
-  .mobile-nav-close {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 24px;
-    color: var(--text-light);
-    line-height: 1;
-    padding: 4px;
-    transition: color 0.2s;
-  }
-  .mobile-nav-close:hover { color: var(--accent); }
-
-  /* Nav links inside panel */
+  /* Each link row */
   .mobile-nav-links {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 8px 0 24px;
   }
   .mobile-nav-links .mn-link {
     display: block;
     text-decoration: none;
     color: var(--black);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    padding: 18px 28px;
+    padding: 20px 28px;
     border-bottom: 1px solid var(--grey-mid);
     transition: color 0.2s, background 0.2s;
   }
+  .mobile-nav-links .mn-link:last-child { border-bottom: none; }
+  .mobile-nav-links .mn-link:active,
   .mobile-nav-links .mn-link:hover { color: var(--accent); background: var(--accent-light); }
+
+  /* Indented sub-links under Projecten */
   .mobile-nav-links .mn-sub {
     display: block;
     text-decoration: none;
     color: var(--text-light);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 500;
     letter-spacing: 2px;
     text-transform: uppercase;
-    padding: 14px 28px 14px 52px;
+    padding: 15px 28px 15px 52px;
     border-bottom: 1px solid var(--grey-mid);
     transition: color 0.2s, background 0.2s;
     position: relative;
@@ -233,12 +204,15 @@
   .mobile-nav-links .mn-sub::before {
     content: '';
     position: absolute;
-    left: 32px; top: 50%;
+    left: 32px;
+    top: 50%;
     transform: translateY(-50%);
-    width: 10px; height: 1px;
+    width: 10px;
+    height: 1px;
     background: var(--accent);
-    opacity: 0.5;
+    opacity: 0.6;
   }
+  .mobile-nav-links .mn-sub:active,
   .mobile-nav-links .mn-sub:hover { color: var(--accent); background: var(--accent-light); }
 
   /* ── PAGES ── */
@@ -930,10 +904,13 @@
      MOBILE RESPONSIVE
   ══════════════════════════════ */
   @media (max-width: 768px) {
-    /* Nav */
+    /* Nav: hide desktop links, show hamburger */
     nav { padding: 0 20px; }
-    .nav-links { display: none; }
+    .nav-links { display: none !important; }
     .hamburger { display: flex; }
+
+    /* Mobile nav: switch from display:none to display:flex (max-height controls open/close) */
+    .mobile-nav { display: flex; }
 
     /* Page headers */
     .page-header { padding: 40px 24px 24px; }
@@ -944,7 +921,7 @@
     .project-category { height: 55vw; }
 
     /* Photo grid */
-    .photo-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+    .photo-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
 
     /* Bureau & Contact */
     .bureau-content, .contact-layout { grid-template-columns: 1fr; }
@@ -996,18 +973,14 @@
   </button>
 </nav>
 
-<!-- Mobile nav backdrop + slide panel -->
+<!-- Mobile nav dropdown (visible only on mobile, drops below navbar) -->
 <div class="mobile-nav-backdrop" id="mobileNavBackdrop" onclick="closeMobileNav()"></div>
 <nav class="mobile-nav" id="mobileNav">
-  <div class="mobile-nav-header">
-    <span>Menu</span>
-    <button class="mobile-nav-close" onclick="closeMobileNav()" aria-label="Sluit menu">&#x2715;</button>
-  </div>
   <div class="mobile-nav-links">
     <a href="#" class="mn-link" onclick="showPage('home'); closeMobileNav(); return false;">Home</a>
     <a href="#" class="mn-link" onclick="showPage('projecten'); closeMobileNav(); return false;">Projecten</a>
-    <a href="#" class="mn-sub" onclick="showPage('nieuwbouw'); closeMobileNav(); return false;">Nieuwbouw</a>
-    <a href="#" class="mn-sub" onclick="showPage('renovatie'); closeMobileNav(); return false;">Renovatie</a>
+    <a href="#" class="mn-sub"  onclick="showPage('nieuwbouw'); closeMobileNav(); return false;">Nieuwbouw</a>
+    <a href="#" class="mn-sub"  onclick="showPage('renovatie'); closeMobileNav(); return false;">Renovatie</a>
     <a href="#" class="mn-link" onclick="showPage('bureau'); closeMobileNav(); return false;">Bureau</a>
     <a href="#" class="mn-link" onclick="showPage('contact'); closeMobileNav(); return false;">Contact</a>
   </div>
@@ -1483,20 +1456,24 @@ function initSlideshow(slideshowId, dotsId) {
 // ── Mobile nav ──
 function toggleMobileNav() {
   const nav = document.getElementById('mobileNav');
-  const backdrop = document.getElementById('mobileNavBackdrop');
   const btn = document.getElementById('hamburger');
   const isOpen = nav.classList.toggle('open');
-  backdrop.classList.toggle('open', isOpen);
   btn.classList.toggle('open', isOpen);
-  document.body.style.overflow = isOpen ? 'hidden' : '';
 }
 
 function closeMobileNav() {
   document.getElementById('mobileNav').classList.remove('open');
-  document.getElementById('mobileNavBackdrop').classList.remove('open');
   document.getElementById('hamburger').classList.remove('open');
-  document.body.style.overflow = '';
 }
+
+// Close mobile nav when clicking outside (on the page content)
+document.addEventListener('click', function(e) {
+  const nav = document.getElementById('mobileNav');
+  const btn = document.getElementById('hamburger');
+  if (nav.classList.contains('open') && !nav.contains(e.target) && !btn.contains(e.target)) {
+    closeMobileNav();
+  }
+});
 
 // ── Page switching ──
 function showPage(id) {
