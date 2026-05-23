@@ -44,6 +44,16 @@
   }
   nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
 
+  /* On mobile, nav becomes relative so the mobile menu pushes content down */
+  @media (max-width: 768px) {
+    nav {
+      position: relative;
+      top: auto; left: auto; right: auto;
+      padding: 0 20px;
+      z-index: auto;
+    }
+  }
+
   .logo {
     height: 48px;
     cursor: pointer;
@@ -117,7 +127,7 @@
   .dropdown a::after { display: none; }
   .dropdown a:hover { background: var(--accent-light); color: var(--accent-dark); }
 
-  /* ── Hamburger button – hidden on desktop, shown on mobile ── */
+  /* ── Hamburger button – hidden on desktop ── */
   .hamburger {
     display: none;
     flex-direction: column;
@@ -128,7 +138,6 @@
     background: none;
     border: none;
     padding: 0;
-    z-index: 1200;
     flex-shrink: 0;
   }
   .hamburger span {
@@ -142,82 +151,16 @@
   .hamburger.open span:nth-child(2) { opacity: 0; }
   .hamburger.open span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
 
-  /* ── Mobile dropdown menu – drops down below the navbar ── */
-  /* Hidden on desktop, only shown inside the mobile media query */
+  /* ── Mobile nav: hidden everywhere by default ── */
   .mobile-nav-backdrop { display: none; }
-
-  .mobile-nav {
-    display: none; /* overridden in media query */
-    position: fixed;
-    top: var(--nav-height);
-    left: 0;
-    right: 0;
-    background: var(--white);
-    z-index: 1100;
-    flex-direction: column;
-    border-top: 2px solid var(--accent-light);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-    /* Animate open/close */
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  .mobile-nav.open {
-    max-height: 600px; /* large enough to fit all items */
-  }
-
-  /* Each link row */
-  .mobile-nav-links {
-    display: flex;
-    flex-direction: column;
-  }
-  .mobile-nav-links .mn-link {
-    display: block;
-    text-decoration: none;
-    color: var(--black);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    padding: 20px 28px;
-    border-bottom: 1px solid var(--grey-mid);
-    transition: color 0.2s, background 0.2s;
-  }
-  .mobile-nav-links .mn-link:last-child { border-bottom: none; }
-  .mobile-nav-links .mn-link:active,
-  .mobile-nav-links .mn-link:hover { color: var(--accent); background: var(--accent-light); }
-
-  /* Indented sub-links under Projecten */
-  .mobile-nav-links .mn-sub {
-    display: block;
-    text-decoration: none;
-    color: var(--text-light);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 15px 28px 15px 52px;
-    border-bottom: 1px solid var(--grey-mid);
-    transition: color 0.2s, background 0.2s;
-    position: relative;
-  }
-  .mobile-nav-links .mn-sub::before {
-    content: '';
-    position: absolute;
-    left: 32px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 10px;
-    height: 1px;
-    background: var(--accent);
-    opacity: 0.6;
-  }
-  .mobile-nav-links .mn-sub:active,
-  .mobile-nav-links .mn-sub:hover { color: var(--accent); background: var(--accent-light); }
+  .mobile-nav { display: none; }
 
   /* ── PAGES ── */
   .page { display: none; min-height: 100vh; padding-top: var(--nav-height); }
   .page.active { display: block; }
+  @media (max-width: 768px) {
+    .page { padding-top: 0; }
+  }
 
   /* ── SCROLL REVEAL ── */
   .reveal {
@@ -901,16 +844,82 @@
   }
 
   /* ══════════════════════════════
-     MOBILE RESPONSIVE
+     MOBILE RESPONSIVE  (≤ 768px)
   ══════════════════════════════ */
   @media (max-width: 768px) {
-    /* Nav: hide desktop links, show hamburger */
-    nav { padding: 0 20px; }
+
+    /* Navbar: hide desktop links, show hamburger */
     .nav-links { display: none !important; }
     .hamburger { display: flex; }
 
-    /* Mobile nav: switch from display:none to display:flex (max-height controls open/close) */
-    .mobile-nav { display: flex; }
+    /* ── Mobile menu: block-level, part of document flow ── */
+    /* Sits right below the navbar; when open it pushes the page down */
+    .mobile-nav {
+      display: block;
+      width: 100%;
+      background: var(--white);
+      border-top: 2px solid var(--accent-light);
+      border-bottom: 2px solid var(--accent-light);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.10);
+      overflow: hidden;
+      height: 0;
+      transition: height 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .mobile-nav.open {
+      /* Enough for 6 rows × ~58px each */
+      height: 348px;
+    }
+
+    .mobile-nav-links {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Main page links */
+    .mobile-nav-links .mn-link {
+      display: block;
+      text-decoration: none;
+      color: var(--black);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 18px 28px;
+      border-bottom: 1px solid var(--grey-mid);
+      transition: color 0.2s, background 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mobile-nav-links .mn-link:active { color: var(--accent); background: var(--accent-light); }
+
+    /* Indented sub-links */
+    .mobile-nav-links .mn-sub {
+      display: block;
+      text-decoration: none;
+      color: #999;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 14px 28px 14px 52px;
+      border-bottom: 1px solid var(--grey-mid);
+      transition: color 0.2s, background 0.2s;
+      position: relative;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mobile-nav-links .mn-sub::before {
+      content: '';
+      position: absolute;
+      left: 32px; top: 50%;
+      transform: translateY(-50%);
+      width: 10px; height: 1px;
+      background: var(--accent);
+      opacity: 0.6;
+    }
+    .mobile-nav-links .mn-sub:active { color: var(--accent); background: var(--accent-light); }
+
+    /* Pages sit below the (now in-flow) nav */
+    .page { padding-top: 0; }
+    #home  { padding-top: 0; }
 
     /* Page headers */
     .page-header { padding: 40px 24px 24px; }
@@ -927,7 +936,8 @@
     .bureau-content, .contact-layout { grid-template-columns: 1fr; }
     .bureau-text, .bureau-aside, .contact-info, .contact-form-wrap { padding: 40px 24px; }
 
-    /* Slideshow caption */
+    /* Slideshow: full height minus nav */
+    .slideshow { height: calc(100vh - var(--nav-height)); }
     .slide-caption h1 { font-size: 36px; }
     .slide-caption { left: 24px; bottom: 40px; }
     .slide-dots { right: 24px; }
@@ -1465,15 +1475,6 @@ function closeMobileNav() {
   document.getElementById('mobileNav').classList.remove('open');
   document.getElementById('hamburger').classList.remove('open');
 }
-
-// Close mobile nav when clicking outside (on the page content)
-document.addEventListener('click', function(e) {
-  const nav = document.getElementById('mobileNav');
-  const btn = document.getElementById('hamburger');
-  if (nav.classList.contains('open') && !nav.contains(e.target) && !btn.contains(e.target)) {
-    closeMobileNav();
-  }
-});
 
 // ── Page switching ──
 function showPage(id) {
