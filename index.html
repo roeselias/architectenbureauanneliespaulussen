@@ -18,7 +18,7 @@
     --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --nav-height: 80px;
   }
- 
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
@@ -27,7 +27,7 @@
     color: var(--black);
     overflow-x: hidden;
   }
- 
+
   /* ── NAV ── */
   nav {
     position: fixed;
@@ -43,12 +43,12 @@
     transition: box-shadow 0.3s;
   }
   nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
- 
+
   .logo {
     height: 48px;
     cursor: pointer;
   }
- 
+
   /* Desktop nav links */
   .nav-links {
     display: flex;
@@ -78,7 +78,7 @@
   }
   .nav-links a:hover { color: var(--accent); }
   .nav-links a:hover::after { width: 100%; }
- 
+
   /* Dropdown – fixed so there's no gap between trigger and menu */
   .dropdown {
     position: absolute;
@@ -91,11 +91,10 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s;
-    /* padding-top creates invisible bridge so mouse can travel down */
     padding-top: 20px;
     margin-top: 0;
   }
-  /* Invisible bridge above dropdown */
+  /* Invisible bridge above dropdown so mouse can travel down */
   .dropdown::before {
     content: '';
     position: absolute;
@@ -112,76 +111,140 @@
     font-size: 10px;
     letter-spacing: 1.5px;
     border-bottom: 1px solid var(--grey);
+    transition: color var(--transition), background var(--transition);
   }
   .dropdown a:last-child { border-bottom: none; }
   .dropdown a::after { display: none; }
-  .dropdown a:hover { background: var(--grey); color: var(--accent); }
- 
+  .dropdown a:hover { background: var(--accent-light); color: var(--accent-dark); }
+
   /* ── Hamburger (mobile) ── */
   .hamburger {
     display: none;
     flex-direction: column;
     justify-content: space-between;
-    width: 26px; height: 18px;
+    width: 28px; height: 20px;
     cursor: pointer;
     background: none;
     border: none;
     padding: 0;
-    z-index: 1100;
+    z-index: 1200;
+    flex-shrink: 0;
   }
   .hamburger span {
     display: block;
     height: 2px;
     background: var(--black);
     border-radius: 2px;
-    transition: all 0.35s ease;
+    transition: all 0.3s ease;
+    transform-origin: center;
   }
-  .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-  .hamburger.open span:nth-child(2) { opacity: 0; }
-  .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
- 
-  /* Mobile nav overlay */
-  .mobile-nav {
+  .hamburger.open span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .hamburger.open span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+  /* Dim overlay behind panel */
+  .mobile-nav-backdrop {
     display: none;
     position: fixed;
     inset: 0;
-    top: var(--nav-height);
+    background: rgba(0,0,0,0.35);
+    z-index: 1050;
+  }
+  .mobile-nav-backdrop.open { display: block; }
+
+  /* Slide-in panel from right */
+  .mobile-nav {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: min(320px, 85vw);
     background: var(--white);
-    z-index: 999;
-    padding: 40px 32px;
+    z-index: 1100;
+    display: flex;
     flex-direction: column;
-    gap: 0;
-    border-top: 1px solid var(--grey-mid);
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: -4px 0 40px rgba(0,0,0,0.12);
     overflow-y: auto;
   }
-  .mobile-nav.open { display: flex; }
-  .mobile-nav a {
+  .mobile-nav.open { transform: translateX(0); }
+
+  /* Panel header */
+  .mobile-nav-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    height: var(--nav-height);
+    border-bottom: 1px solid var(--grey-mid);
+    flex-shrink: 0;
+  }
+  .mobile-nav-header span {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+  .mobile-nav-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: var(--text-light);
+    line-height: 1;
+    padding: 4px;
+    transition: color 0.2s;
+  }
+  .mobile-nav-close:hover { color: var(--accent); }
+
+  /* Nav links inside panel */
+  .mobile-nav-links {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0 24px;
+  }
+  .mobile-nav-links .mn-link {
+    display: block;
     text-decoration: none;
     color: var(--black);
-    font-size: 13px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--grey-mid);
+    transition: color 0.2s, background 0.2s;
+  }
+  .mobile-nav-links .mn-link:hover { color: var(--accent); background: var(--accent-light); }
+  .mobile-nav-links .mn-sub {
+    display: block;
+    text-decoration: none;
+    color: var(--text-light);
+    font-size: 10px;
     font-weight: 500;
     letter-spacing: 2px;
     text-transform: uppercase;
-    padding: 18px 0;
+    padding: 14px 28px 14px 52px;
     border-bottom: 1px solid var(--grey-mid);
-    transition: color 0.2s;
+    transition: color 0.2s, background 0.2s;
+    position: relative;
   }
-  .mobile-nav a:hover { color: var(--accent); }
-  .mobile-nav .mobile-sub {
-    padding-left: 20px;
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    color: var(--text-light);
-    padding-top: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--grey-mid);
+  .mobile-nav-links .mn-sub::before {
+    content: '';
+    position: absolute;
+    left: 32px; top: 50%;
+    transform: translateY(-50%);
+    width: 10px; height: 1px;
+    background: var(--accent);
+    opacity: 0.5;
   }
-  .mobile-nav .mobile-sub:hover { color: var(--accent); }
- 
+  .mobile-nav-links .mn-sub:hover { color: var(--accent); background: var(--accent-light); }
+
   /* ── PAGES ── */
   .page { display: none; min-height: 100vh; padding-top: var(--nav-height); }
   .page.active { display: block; }
- 
+
   /* ── SCROLL REVEAL ── */
   .reveal {
     opacity: 0;
@@ -189,19 +252,19 @@
     transition: opacity 0.7s ease, transform 0.7s ease;
   }
   .reveal.visible { opacity: 1; transform: translateY(0); }
- 
+
   /* ══════════════════════════════
      HOME – SLIDESHOW
   ══════════════════════════════ */
   #home { padding-top: 0; }
- 
+
   .slideshow {
     position: relative;
     height: 100vh;
     overflow: hidden;
     background: #1a1a1a;
   }
- 
+
   .slide {
     position: absolute;
     inset: 0;
@@ -211,18 +274,18 @@
     background-position: center;
   }
   .slide.active { opacity: 1; }
- 
+
   .slide-1 { background-image: url('images/slide1.jpg'); background-size: cover; background-position: center; background-color: #2a2a2a; }
   .slide-2 { background-image: url('images/slide2.jpg'); background-size: cover; background-position: center; background-color: #282828; }
   .slide-3 { background-image: url('images/slide3.jpg'); background-size: cover; background-position: center; background-color: #252525; }
   .slide-4 { background-image: url('images/slide4.jpg'); background-size: cover; background-position: center; background-color: #232323; }
- 
+
   .slide-overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.5) 100%);
   }
- 
+
   .slide-caption {
     position: absolute;
     bottom: 60px;
@@ -250,7 +313,7 @@
     transition: opacity 0.8s 0.5s;
   }
   .slide.active .slide-caption p { opacity: 1; }
- 
+
   .slide-dots {
     position: absolute;
     bottom: 30px;
@@ -267,7 +330,7 @@
     transition: background 0.3s, transform 0.3s;
   }
   .slide-dot.active { background: var(--accent); transform: scale(1.4); }
- 
+
   /* ══════════════════════════════
      PROJECTEN OVERZICHT
   ══════════════════════════════ */
@@ -282,14 +345,14 @@
     letter-spacing: -1px;
   }
   .page-header h2 span { color: var(--accent); font-style: italic; }
- 
+
   .projects-overview {
     display: grid;
     grid-template-columns: 1fr 1fr;
     height: calc(100vh - var(--nav-height) - 161px);
     min-height: 400px;
   }
- 
+
   .project-category {
     position: relative;
     overflow: hidden;
@@ -297,7 +360,7 @@
     background: #1a1a1a;
   }
   .project-category:first-child { border-right: 1px solid var(--white); }
- 
+
   .project-category-bg {
     position: absolute;
     inset: 0;
@@ -318,7 +381,7 @@
     background-color: #2e2e2e;
   }
   .project-category:hover .project-category-bg { transform: scale(1.04); }
- 
+
   .project-category-overlay {
     position: absolute;
     inset: 0;
@@ -328,7 +391,19 @@
   .project-category:hover .project-category-overlay {
     background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.1) 100%);
   }
- 
+  .project-category::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 0 0 var(--accent);
+    transition: box-shadow 0.35s ease;
+    pointer-events: none;
+    z-index: 3;
+  }
+  .project-category:hover::after {
+    box-shadow: inset 0 0 0 3px var(--accent), 0 0 30px rgba(192,132,160,0.25);
+  }
+
   .project-category-label {
     position: absolute;
     bottom: 50px;
@@ -355,12 +430,12 @@
     transition: transform 0.3s;
   }
   .project-category:hover .project-category-label p::after { transform: translateX(6px); }
- 
+
   /* ══════════════════════════════
      FOTO GRID (Nieuwbouw / Renovatie)
   ══════════════════════════════ */
   .photo-grid-page .page-header { margin-bottom: 0; }
- 
+
   .back-btn {
     display: inline-flex;
     align-items: center;
@@ -377,14 +452,14 @@
   }
   .back-btn:hover { color: var(--accent); }
   .back-btn::before { content: '←'; font-size: 14px; }
- 
+
   .photo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 3px;
     padding: 0 3px 3px;
   }
- 
+
   .photo-item {
     position: relative;
     aspect-ratio: 4/3;
@@ -392,7 +467,7 @@
     cursor: pointer;
     background: #e8e8e8;
   }
- 
+
   .photo-item-bg {
     width: 100%; height: 100%;
     background-size: cover;
@@ -400,7 +475,7 @@
     transition: transform 0.5s var(--transition);
   }
   .photo-item:hover .photo-item-bg { transform: scale(1.06); }
- 
+
   .photo-item-overlay {
     position: absolute;
     inset: 0;
@@ -411,7 +486,19 @@
     padding: 20px;
   }
   .photo-item:hover .photo-item-overlay { background: rgba(0,0,0,0.45); }
- 
+  .photo-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 0 0 var(--accent);
+    transition: box-shadow 0.35s ease;
+    pointer-events: none;
+    z-index: 3;
+  }
+  .photo-item:hover::after {
+    box-shadow: inset 0 0 0 3px var(--accent), 0 0 20px rgba(192,132,160,0.35);
+  }
+
   .photo-item-label {
     color: white;
     opacity: 0;
@@ -431,7 +518,7 @@
     color: var(--accent-light);
     margin-top: 2px;
   }
- 
+
   /* Project image placeholders – ready for real images */
   .ph-1 { background-color: #c8c8c8; }
   .ph-2 { background-color: #d4d4d4; }
@@ -442,7 +529,7 @@
   .ph-7 { background-color: #bdbdbd; }
   .ph-8 { background-color: #cacaca; }
   .ph-9 { background-color: #d0d0d0; }
- 
+
   /* ══════════════════════════════
      PROJECT DETAIL VIEWER (nieuw design)
   ══════════════════════════════ */
@@ -456,7 +543,7 @@
     flex-direction: row;
   }
   .project-viewer.open { display: flex; }
- 
+
   /* Left thumbnail strip */
   .viewer-strip {
     width: 200px;
@@ -474,7 +561,7 @@
   .viewer-strip::-webkit-scrollbar { width: 4px; }
   .viewer-strip::-webkit-scrollbar-track { background: #1a1a1a; }
   .viewer-strip::-webkit-scrollbar-thumb { background: #444; border-radius: 2px; }
- 
+
   .viewer-thumb {
     position: relative;
     aspect-ratio: 4/3;
@@ -512,7 +599,7 @@
     color: rgba(255,255,255,0.5);
     letter-spacing: 0.5px;
   }
- 
+
   /* Right main view */
   .viewer-main {
     flex: 1;
@@ -520,7 +607,7 @@
     flex-direction: column;
     overflow: hidden;
   }
- 
+
   .viewer-topbar {
     display: flex;
     align-items: center;
@@ -545,7 +632,7 @@
   }
   .viewer-back:hover { color: var(--accent); }
   .viewer-back::before { content: '←'; font-size: 13px; }
- 
+
   .viewer-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: 20px;
@@ -558,7 +645,7 @@
     letter-spacing: 2px;
     color: rgba(255,255,255,0.35);
   }
- 
+
   .viewer-img-area {
     flex: 1;
     display: flex;
@@ -568,7 +655,7 @@
     padding: 24px;
     overflow: hidden;
   }
- 
+
   .viewer-img-wrap {
     position: relative;
     width: 100%;
@@ -577,7 +664,7 @@
     align-items: center;
     justify-content: center;
   }
- 
+
   .viewer-img {
     max-width: 100%;
     max-height: 100%;
@@ -586,7 +673,7 @@
     border-radius: 2px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.6);
   }
- 
+
   .viewer-img-placeholder {
     width: 100%;
     max-width: 800px;
@@ -604,7 +691,7 @@
     border-radius: 3px;
   }
   .viewer-img-placeholder svg { opacity: 0.15; }
- 
+
   /* Prev / Next arrows over main image */
   .viewer-arrow {
     position: absolute;
@@ -624,7 +711,7 @@
   .viewer-arrow:hover { background: var(--accent); border-color: var(--accent); }
   .viewer-arrow.prev { left: 8px; }
   .viewer-arrow.next { right: 8px; }
- 
+
   /* Mobile viewer */
   @media (max-width: 768px) {
     .viewer-strip { width: 80px; padding: 10px 6px; gap: 3px; }
@@ -634,7 +721,7 @@
     .viewer-img-area { padding: 12px 8px; }
     .viewer-arrow { width: 36px; height: 36px; font-size: 14px; }
   }
- 
+
   /* ══════════════════════════════
      BUREAU
   ══════════════════════════════ */
@@ -644,7 +731,7 @@
     gap: 0;
     min-height: calc(100vh - var(--nav-height));
   }
- 
+
   .bureau-text {
     padding: 80px 60px;
     border-right: 1px solid var(--grey-mid);
@@ -671,12 +758,12 @@
     line-height: 1.6;
     margin-bottom: 32px;
   }
- 
+
   .bureau-aside {
     padding: 80px 60px;
     background: var(--grey);
   }
- 
+
   .info-block { margin-bottom: 48px; }
   .info-block h4 {
     font-size: 10px;
@@ -688,7 +775,7 @@
     border-bottom: 1px solid var(--accent-light);
   }
   .info-block p { font-size: 13px; line-height: 1.8; color: #555; }
- 
+
   .diensten-list { list-style: none; }
   .diensten-list li {
     font-size: 13px;
@@ -704,7 +791,7 @@
     background: var(--accent);
     flex-shrink: 0;
   }
- 
+
   /* ══════════════════════════════
      CONTACT
   ══════════════════════════════ */
@@ -713,7 +800,7 @@
     grid-template-columns: 1fr 1fr;
     min-height: calc(100vh - var(--nav-height));
   }
- 
+
   .contact-info {
     padding: 80px 60px;
     background: var(--grey);
@@ -726,7 +813,7 @@
     line-height: 1.1;
   }
   .contact-info h2 em { color: var(--accent); font-style: italic; }
- 
+
   .contact-detail { margin-bottom: 36px; }
   .contact-detail h4 {
     font-size: 10px;
@@ -744,7 +831,7 @@
     transition: color 0.3s;
   }
   .contact-detail a:hover { color: var(--accent); }
- 
+
   .contact-form-wrap { padding: 80px 60px; }
   .contact-form-wrap h3 {
     font-family: 'Cormorant Garamond', serif;
@@ -752,7 +839,7 @@
     font-weight: 300;
     margin-bottom: 40px;
   }
- 
+
   .form-group { margin-bottom: 28px; }
   .form-group label {
     display: block;
@@ -779,7 +866,7 @@
   }
   .form-group input:focus,
   .form-group textarea:focus { border-color: var(--accent); }
- 
+
   .submit-btn {
     display: inline-flex;
     align-items: center;
@@ -798,7 +885,7 @@
   }
   .submit-btn:hover { background: var(--accent); gap: 18px; }
   .submit-btn::after { content: '→'; }
- 
+
   /* ══════════════════════════════
      FOOTER
   ══════════════════════════════ */
@@ -814,7 +901,7 @@
   }
   footer a { color: rgba(255,255,255,0.4); text-decoration: none; }
   footer a:hover { color: var(--accent); }
- 
+
   /* ══════════════════════════════
      ANIMATIONS
   ══════════════════════════════ */
@@ -828,7 +915,7 @@
   .stagger > *:nth-child(3) { animation-delay: 0.3s; }
   .stagger > *:nth-child(4) { animation-delay: 0.4s; }
   .stagger > *:nth-child(5) { animation-delay: 0.5s; }
- 
+
   /* Form success */
   .form-success { display: none; text-align: center; padding: 40px; }
   .form-success.show { display: block; }
@@ -838,7 +925,7 @@
     color: var(--accent);
     margin-bottom: 12px;
   }
- 
+
   /* ══════════════════════════════
      MOBILE RESPONSIVE
   ══════════════════════════════ */
@@ -847,34 +934,34 @@
     nav { padding: 0 20px; }
     .nav-links { display: none; }
     .hamburger { display: flex; }
- 
+
     /* Page headers */
     .page-header { padding: 40px 24px 24px; }
     .back-btn { padding: 30px 24px 10px; }
- 
+
     /* Projecten overview */
     .projects-overview { grid-template-columns: 1fr; height: auto; }
     .project-category { height: 55vw; }
- 
+
     /* Photo grid */
     .photo-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
- 
+
     /* Bureau & Contact */
     .bureau-content, .contact-layout { grid-template-columns: 1fr; }
     .bureau-text, .bureau-aside, .contact-info, .contact-form-wrap { padding: 40px 24px; }
- 
+
     /* Slideshow caption */
     .slide-caption h1 { font-size: 36px; }
     .slide-caption { left: 24px; bottom: 40px; }
     .slide-dots { right: 24px; }
- 
+
     /* Footer */
     footer { padding: 24px 20px; flex-direction: column; gap: 8px; text-align: center; }
   }
 </style>
 </head>
 <body>
- 
+
 <!-- ── NAVIGATION ── -->
 <nav id="navbar">
   <img
@@ -888,7 +975,7 @@
     <span style="color:var(--accent)">annelies</span><br>
     <span style="font-size:14px; letter-spacing:2px;">paulussen</span>
   </div>
- 
+
   <!-- Desktop links -->
   <ul class="nav-links">
     <li><a href="#" onclick="showPage('home'); return false;">Home</a></li>
@@ -902,23 +989,30 @@
     <li><a href="#" onclick="showPage('bureau'); return false;">Bureau</a></li>
     <li><a href="#" onclick="showPage('contact'); return false;">Contact</a></li>
   </ul>
- 
+
   <!-- Hamburger (mobile) -->
   <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileNav()">
     <span></span><span></span><span></span>
   </button>
 </nav>
- 
-<!-- Mobile nav overlay -->
+
+<!-- Mobile nav backdrop + slide panel -->
+<div class="mobile-nav-backdrop" id="mobileNavBackdrop" onclick="closeMobileNav()"></div>
 <nav class="mobile-nav" id="mobileNav">
-  <a href="#" class="mobile-sub" onclick="showPage('home'); closeMobileNav(); return false;">Home</a>
-  <a href="#" class="mobile-sub" onclick="showPage('projecten'); closeMobileNav(); return false;">Projecten</a>
-  <a href="#" class="mobile-sub" style="padding-left:36px; font-size:10px;" onclick="showPage('nieuwbouw'); closeMobileNav(); return false;">↳ Nieuwbouw</a>
-  <a href="#" class="mobile-sub" style="padding-left:36px; font-size:10px;" onclick="showPage('renovatie'); closeMobileNav(); return false;">↳ Renovatie</a>
-  <a href="#" class="mobile-sub" onclick="showPage('bureau'); closeMobileNav(); return false;">Bureau</a>
-  <a href="#" class="mobile-sub" onclick="showPage('contact'); closeMobileNav(); return false;">Contact</a>
+  <div class="mobile-nav-header">
+    <span>Menu</span>
+    <button class="mobile-nav-close" onclick="closeMobileNav()" aria-label="Sluit menu">&#x2715;</button>
+  </div>
+  <div class="mobile-nav-links">
+    <a href="#" class="mn-link" onclick="showPage('home'); closeMobileNav(); return false;">Home</a>
+    <a href="#" class="mn-link" onclick="showPage('projecten'); closeMobileNav(); return false;">Projecten</a>
+    <a href="#" class="mn-sub" onclick="showPage('nieuwbouw'); closeMobileNav(); return false;">Nieuwbouw</a>
+    <a href="#" class="mn-sub" onclick="showPage('renovatie'); closeMobileNav(); return false;">Renovatie</a>
+    <a href="#" class="mn-link" onclick="showPage('bureau'); closeMobileNav(); return false;">Bureau</a>
+    <a href="#" class="mn-link" onclick="showPage('contact'); closeMobileNav(); return false;">Contact</a>
+  </div>
 </nav>
- 
+
 <!-- ══════════════════════════════
      HOME
 ══════════════════════════════ -->
@@ -954,13 +1048,13 @@
     </div>
     <div class="slide-dots" id="mainDots"></div>
   </div>
- 
+
   <footer>
     <span>© 2026 Annelies Paulussen Architectenbureau bvba</span>
     <a href="#" onclick="showPage('contact'); return false;">Contact</a>
   </footer>
 </div>
- 
+
 <!-- ══════════════════════════════
      PROJECTEN OVERVIEW
 ══════════════════════════════ -->
@@ -991,7 +1085,7 @@
     <a href="#" onclick="showPage('contact'); return false;">Contact</a>
   </footer>
 </div>
- 
+
 <!-- ══════════════════════════════
      NIEUWBOUW
 ══════════════════════════════ -->
@@ -1006,7 +1100,7 @@
     <a href="#" onclick="showPage('contact'); return false;">Contact</a>
   </footer>
 </div>
- 
+
 <!-- ══════════════════════════════
      RENOVATIE
 ══════════════════════════════ -->
@@ -1021,7 +1115,7 @@
     <a href="#" onclick="showPage('contact'); return false;">Contact</a>
   </footer>
 </div>
- 
+
 <!-- ══════════════════════════════
      BUREAU
 ══════════════════════════════ -->
@@ -1065,7 +1159,7 @@
     <a href="#" onclick="showPage('contact'); return false;">Contact</a>
   </footer>
 </div>
- 
+
 <!-- ══════════════════════════════
      CONTACT
 ══════════════════════════════ -->
@@ -1094,7 +1188,7 @@
         <p>BE 0000.000.000</p>
       </div>
     </div>
- 
+
     <div class="contact-form-wrap">
       <h3 class="reveal">Stuur ons een bericht</h3>
       <div id="contactFormWrap">
@@ -1123,14 +1217,14 @@
     <a href="mailto:info@annelies-paulussen.be">info@annelies-paulussen.be</a>
   </footer>
 </div>
- 
+
 <!-- ══════════════════════════════
      PROJECT VIEWER (nieuw design)
 ══════════════════════════════ -->
 <div class="project-viewer" id="projectViewer">
   <!-- Left thumbnail strip -->
   <div class="viewer-strip" id="viewerStrip"></div>
- 
+
   <!-- Right main area -->
   <div class="viewer-main">
     <div class="viewer-topbar">
@@ -1154,7 +1248,7 @@
     </div>
   </div>
 </div>
- 
+
 <!-- ══════════════════════════════
      JAVASCRIPT
 ══════════════════════════════ -->
@@ -1180,7 +1274,7 @@ const nieuwbouwProjecten = [
   { naam: 'Energie-neutrale woning', locatie: 'Olen', fotos: 6, ph: 'ph-9',
     images: ['images/projecten/energieneutraal-1.jpg','images/projecten/energieneutraal-2.jpg','images/projecten/energieneutraal-3.jpg','images/projecten/energieneutraal-4.jpg','images/projecten/energieneutraal-5.jpg','images/projecten/energieneutraal-6.jpg'] },
 ];
- 
+
 const renovatieProjecten = [
   { naam: 'Hoeve verbouwing', locatie: 'Vorselaar', fotos: 5, ph: 'ph-3',
     images: ['images/projecten/hoeve-1.jpg','images/projecten/hoeve-2.jpg','images/projecten/hoeve-3.jpg','images/projecten/hoeve-4.jpg','images/projecten/hoeve-5.jpg'] },
@@ -1199,12 +1293,12 @@ const renovatieProjecten = [
   { naam: 'Dakrenovatie met dakkapel', locatie: 'Turnhout', fotos: 3, ph: 'ph-5',
     images: ['images/projecten/dakkapel-1.jpg','images/projecten/dakkapel-2.jpg','images/projecten/dakkapel-3.jpg'] },
 ];
- 
+
 // ── Viewer state ──
 let currentProject = null;
 let currentPhotoIndex = 0;
 let viewerSourcePage = 'projecten';
- 
+
 // ── Build thumbnail strip ──
 function buildViewerStrip(project) {
   const strip = document.getElementById('viewerStrip');
@@ -1213,7 +1307,7 @@ function buildViewerStrip(project) {
     const thumb = document.createElement('div');
     thumb.className = 'viewer-thumb' + (i === 0 ? ' active' : '');
     thumb.dataset.index = i;
- 
+
     const imgSrc = project.images && project.images[i] ? project.images[i] : null;
     if (imgSrc) {
       const img = document.createElement('img');
@@ -1227,17 +1321,17 @@ function buildViewerStrip(project) {
       ph.textContent = (i + 1);
       thumb.appendChild(ph);
     }
- 
+
     const num = document.createElement('span');
     num.className = 'viewer-thumb-num';
     num.textContent = (i + 1);
     thumb.appendChild(num);
- 
+
     thumb.addEventListener('click', () => viewerGoTo(i));
     strip.appendChild(thumb);
   }
 }
- 
+
 // ── Update main image ──
 function updateViewerMain() {
   const project = currentProject;
@@ -1246,9 +1340,9 @@ function updateViewerMain() {
   const phEl = document.getElementById('viewerImgPlaceholder');
   const label = document.getElementById('viewerPlaceholderLabel');
   const counter = document.getElementById('viewerCounter');
- 
+
   counter.textContent = (i + 1) + ' / ' + project.fotos;
- 
+
   const imgSrc = project.images && project.images[i] ? project.images[i] : null;
   if (imgSrc) {
     imgEl.src = imgSrc;
@@ -1260,17 +1354,17 @@ function updateViewerMain() {
     phEl.style.display = 'flex';
     label.textContent = 'Foto ' + (i + 1) + ' — ' + project.naam;
   }
- 
+
   // Highlight active thumb
   document.querySelectorAll('.viewer-thumb').forEach((t, idx) => {
     t.classList.toggle('active', idx === i);
   });
- 
+
   // Scroll active thumb into view
   const activeThumb = document.querySelector('.viewer-thumb.active');
   if (activeThumb) activeThumb.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 }
- 
+
 // ── Open viewer ──
 function openViewer(project, sourcePage) {
   currentProject = project;
@@ -1282,25 +1376,25 @@ function openViewer(project, sourcePage) {
   document.getElementById('projectViewer').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
- 
+
 function closeViewer() {
   document.getElementById('projectViewer').classList.remove('open');
   document.body.style.overflow = '';
 }
- 
+
 function viewerGoTo(n) {
   currentPhotoIndex = n;
   updateViewerMain();
 }
- 
+
 function viewerNext() {
   viewerGoTo((currentPhotoIndex + 1) % currentProject.fotos);
 }
- 
+
 function viewerPrev() {
   viewerGoTo((currentPhotoIndex - 1 + currentProject.fotos) % currentProject.fotos);
 }
- 
+
 // Keyboard nav
 document.addEventListener('keydown', e => {
   if (!document.getElementById('projectViewer').classList.contains('open')) return;
@@ -1308,7 +1402,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') viewerPrev();
   if (e.key === 'Escape') closeViewer();
 });
- 
+
 // ── Render photo grids ──
 function renderGrid(containerId, projecten, sourcePage) {
   const grid = document.getElementById(containerId);
@@ -1316,13 +1410,13 @@ function renderGrid(containerId, projecten, sourcePage) {
   projecten.forEach((p, i) => {
     const item = document.createElement('div');
     item.className = 'photo-item reveal';
- 
+
     // Use real image if available, else colour placeholder
     const coverSrc = p.images && p.images[0] ? p.images[0] : null;
     const bgStyle = coverSrc
       ? `background-image: url('${coverSrc}'); background-size: cover; background-position: center;`
       : '';
- 
+
     item.innerHTML = `
       <div class="photo-item-bg ${coverSrc ? '' : p.ph}" style="${bgStyle}"></div>
       <div class="photo-item-overlay">
@@ -1337,8 +1431,8 @@ function renderGrid(containerId, projecten, sourcePage) {
     setTimeout(() => item.classList.add('visible'), 100 + i * 60);
   });
 }
- 
-// ── Slideshow (auto-play) ──
+
+// ── Slideshow (auto-play, always running, touch-swipe on mobile) ──
 function initSlideshow(slideshowId, dotsId) {
   const ss = document.getElementById(slideshowId);
   if (!ss) return;
@@ -1346,47 +1440,64 @@ function initSlideshow(slideshowId, dotsId) {
   const dotsContainer = document.getElementById(dotsId);
   let current = 0;
   let timer;
- 
+
   dotsContainer.innerHTML = '';
   slides.forEach((_, i) => {
     const dot = document.createElement('div');
     dot.className = 'slide-dot' + (i === 0 ? ' active' : '');
-    dot.onclick = () => goTo(i);
+    dot.onclick = () => { goTo(i); resetTimer(); };
     dotsContainer.appendChild(dot);
   });
- 
+
   function goTo(n) {
     slides[current].classList.remove('active');
     dotsContainer.children[current].classList.remove('active');
-    current = n;
+    current = (n + slides.length) % slides.length;
     slides[current].classList.add('active');
     dotsContainer.children[current].classList.add('active');
   }
- 
-  function next() { goTo((current + 1) % slides.length); }
-  function start() { timer = setInterval(next, 5000); }
-  function stop() { clearInterval(timer); }
- 
-  ss.addEventListener('mouseenter', stop);
-  ss.addEventListener('mouseleave', start);
-  start();
+
+  function next() { goTo(current + 1); }
+  function resetTimer() { clearInterval(timer); timer = setInterval(next, 5000); }
+
+  // Always running – no pause on hover
+  resetTimer();
+
+  // Touch swipe support
+  let touchStartX = 0;
+  let touchStartY = 0;
+  ss.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  ss.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+      goTo(dx < 0 ? current + 1 : current - 1);
+      resetTimer();
+    }
+  }, { passive: true });
 }
- 
+
 // ── Mobile nav ──
 function toggleMobileNav() {
   const nav = document.getElementById('mobileNav');
+  const backdrop = document.getElementById('mobileNavBackdrop');
   const btn = document.getElementById('hamburger');
-  const open = nav.classList.toggle('open');
-  btn.classList.toggle('open', open);
-  document.body.style.overflow = open ? 'hidden' : '';
+  const isOpen = nav.classList.toggle('open');
+  backdrop.classList.toggle('open', isOpen);
+  btn.classList.toggle('open', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
 }
- 
+
 function closeMobileNav() {
   document.getElementById('mobileNav').classList.remove('open');
+  document.getElementById('mobileNavBackdrop').classList.remove('open');
   document.getElementById('hamburger').classList.remove('open');
   document.body.style.overflow = '';
 }
- 
+
 // ── Page switching ──
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1398,7 +1509,7 @@ function showPage(id) {
   if (id === 'nieuwbouw') renderGrid('nieuwbouwGrid', nieuwbouwProjecten, 'nieuwbouw');
   if (id === 'renovatie') renderGrid('renovatieGrid', renovatieProjecten, 'renovatie');
 }
- 
+
 // ── Scroll reveal ──
 function initReveal() {
   const reveals = document.querySelectorAll('.page.active .reveal');
@@ -1411,12 +1522,12 @@ function initReveal() {
     if (rect.top < window.innerHeight * 0.9) el.classList.add('visible');
   });
 }
- 
+
 // ── Navbar scroll ──
 window.addEventListener('scroll', () => {
   document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10);
 });
- 
+
 // ── Contact form ──
 function submitForm() {
   const naam = document.getElementById('cNaam').value.trim();
@@ -1428,7 +1539,7 @@ function submitForm() {
   document.getElementById('contactFormWrap').style.display = 'none';
   document.getElementById('formSuccess').classList.add('show');
 }
- 
+
 // ── Init ──
 initSlideshow('mainSlideshow', 'mainDots');
 initReveal();
