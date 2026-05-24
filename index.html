@@ -89,10 +89,10 @@
   .nav-links a:hover { color: var(--accent); }
   .nav-links a:hover::after { width: 100%; }
 
-  /* Dropdown – fixed so there's no gap between trigger and menu */
+  /* Dropdown – vertraging zodat de Projecten-link zelf altijd klikbaar blijft */
   .dropdown {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px);
     left: 50%;
     transform: translateX(-50%);
     background: var(--white);
@@ -100,16 +100,7 @@
     min-width: 160px;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.2s;
-    padding-top: 20px;
-    margin-top: 0;
-  }
-  /* Invisible bridge above dropdown so mouse can travel down */
-  .dropdown::before {
-    content: '';
-    position: absolute;
-    top: -20px; left: 0; right: 0;
-    height: 20px;
+    transition: opacity 0.2s 0.15s;  /* 150ms delay: hover must linger before it appears */
   }
   .nav-links li:hover .dropdown {
     opacity: 1;
