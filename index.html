@@ -1500,6 +1500,7 @@ function closeMobileNav() {
 
 // ── Page switching ──
 function showPage(id) {
+  closeViewer();
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const page = document.getElementById(id);
   page.classList.add('active');
