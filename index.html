@@ -90,64 +90,62 @@
   .nav-links a:hover::after { width: 100%; }
 
   /* Dropdown */
-.dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--white);
-  border: 1px solid var(--grey-mid);
-  min-width: 160px;
+  .dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--white);
+    border: 1px solid var(--grey-mid);
+    min-width: 160px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
 
-  opacity: 0;
-  pointer-events: none;
+  /* Onzichtbare hover-brug */
+  .dropdown::before {
+    content: '';
+    position: absolute;
+    top: -16px;
+    left: 0;
+    width: 100%;
+    height: 16px;
+  }
 
-  transition: opacity 0.2s ease;
-}
+  /* Groter hovergebied */
+  .nav-links > li {
+    position: relative;
+    padding-bottom: 12px;
+  }
 
-/* Onzichtbare hover-brug */
-.dropdown::before {
-  content: '';
-  position: absolute;
-  top: -16px;
-  left: 0;
-  width: 100%;
-  height: 16px;
-}
+  /* Dropdown tonen */
+  .nav-links li:hover .dropdown {
+    opacity: 1;
+    pointer-events: all;
+  }
 
-/* Groter hovergebied */
-.nav-links > li {
-  position: relative;
-  padding-bottom: 12px;
-}
+  .dropdown a {
+    display: block;
+    padding: 12px 20px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    border-bottom: 1px solid var(--grey);
+    transition: color var(--transition), background var(--transition);
+  }
 
-/* Dropdown tonen */
-.nav-links li:hover .dropdown {
-  opacity: 1;
-  pointer-events: all;
-}
+  .dropdown a:last-child {
+    border-bottom: none;
+  }
 
-.dropdown a {
-  display: block;
-  padding: 12px 20px;
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  border-bottom: 1px solid var(--grey);
-  transition: color var(--transition), background var(--transition);
-}
+  .dropdown a::after {
+    display: none;
+  }
 
-.dropdown a:last-child {
-  border-bottom: none;
-}
-
-.dropdown a::after {
-  display: none;
-}
-
-.dropdown a:hover {
-  background: var(--accent-light);
-  color: var(--accent-dark);
-}
+  .dropdown a:hover {
+    background: var(--accent-light);
+    color: var(--accent-dark);
+  }
   
   /* ── Hamburger button – hidden on desktop ── */
   .hamburger {
@@ -173,7 +171,7 @@
   .hamburger.open span:nth-child(2) { opacity: 0; }
   .hamburger.open span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
 
-  /* ── Mobile nav: hidden everywhere by default ── */
+  /* ── Mobile nav ── */
   .mobile-nav-backdrop { display: none; }
   .mobile-nav { display: none; }
 
@@ -370,9 +368,7 @@
   }
   .project-category:hover .project-category-label p::after { transform: translateX(6px); }
 
-  /* ══════════════════════════════
-     FOTO GRID (Nieuwbouw / Renovatie)
-  ══════════════════════════════ */
+  /* ── FOTO GRID (Nieuwbouw / Renovatie) ── */
   .photo-grid-page .page-header { margin-bottom: 0; }
 
   .back-btn {
@@ -458,7 +454,7 @@
     margin-top: 2px;
   }
 
-  /* Project image placeholders – ready for real images */
+  /* Project image placeholders */
   .ph-1 { background-color: #c8c8c8; }
   .ph-2 { background-color: #d4d4d4; }
   .ph-3 { background-color: #b8b8b8; }
@@ -470,7 +466,7 @@
   .ph-9 { background-color: #d0d0d0; }
 
   /* ══════════════════════════════
-     PROJECT DETAIL VIEWER (nieuw design)
+     PROJECT DETAIL VIEWER
   ══════════════════════════════ */
   .project-viewer {
     display: none;
@@ -631,7 +627,7 @@
   }
   .viewer-img-placeholder svg { opacity: 0.15; }
 
-  /* Prev / Next arrows over main image */
+  /* Prev / Next arrows */
   .viewer-arrow {
     position: absolute;
     top: 50%;
@@ -841,9 +837,7 @@
   footer a { color: rgba(255,255,255,0.4); text-decoration: none; }
   footer a:hover { color: var(--accent); }
 
-  /* ══════════════════════════════
-     ANIMATIONS
-  ══════════════════════════════ */
+  /* ── ANIMATIONS ── */
   @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -869,13 +863,9 @@
      MOBILE RESPONSIVE  (≤ 768px)
   ══════════════════════════════ */
   @media (max-width: 768px) {
-
-    /* Navbar: hide desktop links, show hamburger */
     .nav-links { display: none !important; }
     .hamburger { display: flex; }
 
-    /* ── Mobile menu: block-level, part of document flow ── */
-    /* Sits right below the navbar; when open it pushes the page down */
     .mobile-nav {
       display: block;
       width: 100%;
@@ -888,7 +878,6 @@
       transition: height 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
     }
     .mobile-nav.open {
-      /* Enough for 6 rows × ~58px each */
       height: 348px;
     }
 
@@ -897,7 +886,6 @@
       flex-direction: column;
     }
 
-    /* Main page links */
     .mobile-nav-links .mn-link {
       display: block;
       text-decoration: none;
@@ -913,7 +901,6 @@
     }
     .mobile-nav-links .mn-link:active { color: var(--accent); background: var(--accent-light); }
 
-    /* Indented sub-links */
     .mobile-nav-links .mn-sub {
       display: block;
       text-decoration: none;
@@ -939,39 +926,25 @@
     }
     .mobile-nav-links .mn-sub:active { color: var(--accent); background: var(--accent-light); }
 
-    /* Pages sit below the (now in-flow) nav */
     .page { padding-top: 0; }
     #home  { padding-top: 0; }
-
-    /* Page headers */
     .page-header { padding: 40px 24px 24px; }
     .back-btn { padding: 30px 24px 10px; }
-
-    /* Projecten overview */
     .projects-overview { grid-template-columns: 1fr; height: auto; }
     .project-category { height: 55vw; }
-
-    /* Photo grid */
     .photo-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-
-    /* Bureau & Contact */
     .bureau-content, .contact-layout { grid-template-columns: 1fr; }
     .bureau-text, .bureau-aside, .contact-info, .contact-form-wrap { padding: 40px 24px; }
-
-    /* Slideshow: full height minus nav */
     .slideshow { height: calc(100vh - var(--nav-height)); }
     .slide-caption h1 { font-size: 36px; }
     .slide-caption { left: 24px; bottom: 40px; }
     .slide-dots { right: 24px; }
-
-    /* Footer */
     footer { padding: 24px 20px; flex-direction: column; gap: 8px; text-align: center; }
   }
 </style>
 </head>
 <body>
 
-<!-- ── NAVIGATION ── -->
 <nav id="navbar">
   <img
     src="images/logo.png"
@@ -985,7 +958,6 @@
     <span style="font-size:14px; letter-spacing:2px;">paulussen</span>
   </div>
 
-  <!-- Desktop links -->
   <ul class="nav-links">
     <li><a href="#" onclick="showPage('home'); return false;">Home</a></li>
     <li>
@@ -999,13 +971,11 @@
     <li><a href="#" onclick="showPage('contact'); return false;">Contact</a></li>
   </ul>
 
-  <!-- Hamburger (mobile) -->
   <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileNav()">
     <span></span><span></span><span></span>
   </button>
 </nav>
 
-<!-- Mobile nav dropdown (visible only on mobile, drops below navbar) -->
 <div class="mobile-nav-backdrop" id="mobileNavBackdrop" onclick="closeMobileNav()"></div>
 <nav class="mobile-nav" id="mobileNav">
   <div class="mobile-nav-links">
@@ -1018,9 +988,6 @@
   </div>
 </nav>
 
-<!-- ══════════════════════════════
-     HOME
-══════════════════════════════ -->
 <div id="home" class="page active">
   <div class="slideshow" id="mainSlideshow">
     <div class="slide slide-1 active">
@@ -1060,9 +1027,6 @@
   </footer>
 </div>
 
-<!-- ══════════════════════════════
-     PROJECTEN OVERVIEW
-══════════════════════════════ -->
 <div id="projecten" class="page">
   <div class="page-header reveal">
     <h2><em>Projecten</em></h2>
@@ -1091,9 +1055,6 @@
   </footer>
 </div>
 
-<!-- ══════════════════════════════
-     NIEUWBOUW
-══════════════════════════════ -->
 <div id="nieuwbouw" class="page photo-grid-page">
   <button class="back-btn" onclick="showPage('projecten')">Terug naar projecten</button>
   <div class="page-header reveal" style="padding-top: 0; padding-bottom: 30px;">
@@ -1106,9 +1067,6 @@
   </footer>
 </div>
 
-<!-- ══════════════════════════════
-     RENOVATIE
-══════════════════════════════ -->
 <div id="renovatie" class="page photo-grid-page">
   <button class="back-btn" onclick="showPage('projecten')">Terug naar projecten</button>
   <div class="page-header reveal" style="padding-top: 0; padding-bottom: 30px;">
@@ -1121,15 +1079,12 @@
   </footer>
 </div>
 
-<!-- ══════════════════════════════
-     BUREAU
-══════════════════════════════ -->
 <div id="bureau" class="page">
   <div class="bureau-content">
     <div class="bureau-text">
       <h2 class="reveal">Over het <em>bureau</em></h2>
       <p class="lead reveal">Architectenbureau Annelies Paulussen bvba is een gepassioneerd architectenbureau dat maatwerk levert voor zowel particulieren als bedrijven.</p>
-      <p class="reveal">Met een uitgebreide expertise in zowel nieuwbouw als renovatieprojecten begeleiden wij u van het eerste gesprek tot de oplevering van uw project. Wij geloven in een nauwe samenwerking met onze klanten, waarbij uw wensen en noden centraal staan.</p>
+      <p class="reveal">Met een uitgebreide expertise in zowel nieuwbouw als renovatieprojecten begeleiden wij u van het eerste gesprek tot de oplevering van uw project. Wij geloven in een nauwe samenwerking met onze klanten, waarbij uw wensen van het ontwerp centraal staan.</p>
       <p class="reveal">Elk project wordt met de grootste zorg en aandacht voor detail uitgewerkt. Of het nu gaat om een gezinswoning, een bedrijfsgebouw of de verbouwing van een bestaand pand: wij gaan steeds voor een kwalitatief en tijdloos resultaat dat perfect aansluit bij uw persoonlijke stijl en budget.</p>
       <p class="reveal">Ons bureau combineert een moderne aanpak met een diepgaand respect voor de omgeving en het bestaande karakter van een gebouw. Duurzaamheid en functionaliteit zijn voor ons geen bijzaak, maar een vanzelfsprekendheid.</p>
       <p class="reveal">Annelies Paulussen is architect en beëdigd schatter. Na haar studies aan de Hogeschool voor Wetenschap &amp; Kunst (Sint-Lucas) behaalde zij haar masterdiploma en richtte zij haar eigen bureau op.</p>
@@ -1165,9 +1120,6 @@
   </footer>
 </div>
 
-<!-- ══════════════════════════════
-     CONTACT
-══════════════════════════════ -->
 <div id="contact" class="page">
   <div class="contact-layout">
     <div class="contact-info">
@@ -1223,14 +1175,9 @@
   </footer>
 </div>
 
-<!-- ══════════════════════════════
-     PROJECT VIEWER (nieuw design)
-══════════════════════════════ -->
 <div class="project-viewer" id="projectViewer">
-  <!-- Left thumbnail strip -->
   <div class="viewer-strip" id="viewerStrip"></div>
 
-  <!-- Right main area -->
   <div class="viewer-main">
     <div class="viewer-topbar">
       <button class="viewer-back" id="viewerBack" onclick="closeViewer()">Terug</button>
@@ -1254,48 +1201,45 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════
-     JAVASCRIPT
-══════════════════════════════ -->
 <script>
 // ── DATA ──
 const nieuwbouwProjecten = [
-  { naam: 'Villa Kempen', locatie: 'Geel', fotos: 5, ph: 'ph-1',
-    images: ['images/nieuwbouw/32-D-Poederlee-1.jpg','images/nieuwbouw/32-D-Poederlee-2.jpg','images/nieuwbouw/32-D-Poederlee-3.jpg','images/nieuwbouw/32-D-Poederlee-4.jpg','images/nieuwbouw/32-D-Poederlee-4.jpg','images/nieuwbouw/32-D-Poederlee-5.jpg','images/nieuwbouw/32-D-Poederlee-6.jpg','images/nieuwbouw/32-D-Poederlee-7.jpg','images/nieuwbouw/32-D-Poederlee-8.jpg'] },
-  { naam: 'Woning Janssen', locatie: 'Mol', fotos: 4, ph: 'ph-2',
+  { naam: 'Villa Kempen', locatie: 'Geel', ph: 'ph-1',
+    images: ['images/nieuwbouw/32-D-Poederlee-1.jpg','images/nieuwbouw/32-D-Poederlee-2.jpg','images/nieuwbouw/32-D-Poederlee-3.jpg','images/nieuwbouw/32-D-Poederlee-4.jpg','images/nieuwbouw/32-D-Poederlee-5.jpg','images/nieuwbouw/32-D-Poederlee-6.jpg','images/nieuwbouw/32-D-Poederlee-7.jpg','images/nieuwbouw/32-D-Poederlee-8.jpg'] },
+  { naam: 'Woning Janssen', locatie: 'Mol', ph: 'ph-2',
     images: ['images/projecten/woning-janssen-1.jpg','images/projecten/woning-janssen-2.jpg','images/projecten/woning-janssen-3.jpg','images/projecten/woning-janssen-4.jpg'] },
-  { naam: 'Moderne gezinswoning', locatie: 'Herentals', fotos: 6, ph: 'ph-3',
+  { naam: 'Moderne gezinswoning', locatie: 'Herentals', ph: 'ph-3',
     images: ['images/projecten/gezinswoning-1.jpg','images/projecten/gezinswoning-2.jpg','images/projecten/gezinswoning-3.jpg','images/projecten/gezinswoning-4.jpg','images/projecten/gezinswoning-5.jpg','images/projecten/gezinswoning-6.jpg'] },
-  { naam: 'Halfopen bebouwing', locatie: 'Lier', fotos: 3, ph: 'ph-4',
+  { naam: 'Halfopen bebouwing', locatie: 'Lier', ph: 'ph-4',
     images: ['images/projecten/halfopen-1.jpg','images/projecten/halfopen-2.jpg','images/projecten/halfopen-3.jpg'] },
-  { naam: 'Passiefwoning De Smedt', locatie: 'Turnhout', fotos: 5, ph: 'ph-5',
+  { naam: 'Passiefwoning De Smedt', locatie: 'Turnhout', ph: 'ph-5',
     images: ['images/projecten/passiefwoning-1.jpg','images/projecten/passiefwoning-2.jpg','images/projecten/passiefwoning-3.jpg','images/projecten/passiefwoning-4.jpg','images/projecten/passiefwoning-5.jpg'] },
-  { naam: 'Tijdloze villa', locatie: 'Kasterlee', fotos: 7, ph: 'ph-6',
+  { naam: 'Tijdloze villa', locatie: 'Kasterlee', ph: 'ph-6',
     images: ['images/projecten/villa-kasterlee-1.jpg','images/projecten/villa-kasterlee-2.jpg','images/projecten/villa-kasterlee-3.jpg','images/projecten/villa-kasterlee-4.jpg','images/projecten/villa-kasterlee-5.jpg','images/projecten/villa-kasterlee-6.jpg','images/projecten/villa-kasterlee-7.jpg'] },
-  { naam: 'Landelijke nieuwbouw', locatie: 'Retie', fotos: 4, ph: 'ph-7',
+  { naam: 'Landelijke nieuwbouw', locatie: 'Retie', ph: 'ph-7',
     images: ['images/projecten/landelijk-1.jpg','images/projecten/landelijk-2.jpg','images/projecten/landelijk-3.jpg','images/projecten/landelijk-4.jpg'] },
-  { naam: 'Strakke kubuswoning', locatie: 'Grobbendonk', fotos: 5, ph: 'ph-8',
+  { naam: 'Strakke kubuswoning', locatie: 'Grobbendonk', ph: 'ph-8',
     images: ['images/projecten/kubus-1.jpg','images/projecten/kubus-2.jpg','images/projecten/kubus-3.jpg','images/projecten/kubus-4.jpg','images/projecten/kubus-5.jpg'] },
-  { naam: 'Energie-neutrale woning', locatie: 'Olen', fotos: 6, ph: 'ph-9',
+  { naam: 'Energie-neutrale woning', locatie: 'Olen', ph: 'ph-9',
     images: ['images/projecten/energieneutraal-1.jpg','images/projecten/energieneutraal-2.jpg','images/projecten/energieneutraal-3.jpg','images/projecten/energieneutraal-4.jpg','images/projecten/energieneutraal-5.jpg','images/projecten/energieneutraal-6.jpg'] },
 ];
 
 const renovatieProjecten = [
-  { naam: 'Hoeve verbouwing', locatie: 'Vorselaar', fotos: 5, ph: 'ph-3',
+  { naam: 'Hoeve verbouwing', locatie: 'Vorselaar', ph: 'ph-3',
     images: ['images/projecten/hoeve-1.jpg','images/projecten/hoeve-2.jpg','images/projecten/hoeve-3.jpg','images/projecten/hoeve-4.jpg','images/projecten/hoeve-5.jpg'] },
-  { naam: 'Stadsrenovatie', locatie: 'Mechelen', fotos: 4, ph: 'ph-1',
+  { naam: 'Stadsrenovatie', locatie: 'Mechelen', ph: 'ph-1',
     images: ['images/projecten/stadsrenovatie-1.jpg','images/projecten/stadsrenovatie-2.jpg','images/projecten/stadsrenovatie-3.jpg','images/projecten/stadsrenovatie-4.jpg'] },
-  { naam: 'Industrieel loft', locatie: 'Antwerpen', fotos: 6, ph: 'ph-6',
+  { naam: 'Industrieel loft', locatie: 'Antwerpen', ph: 'ph-6',
     images: ['images/projecten/loft-1.jpg','images/projecten/loft-2.jpg','images/projecten/loft-3.jpg','images/projecten/loft-4.jpg','images/projecten/loft-5.jpg','images/projecten/loft-6.jpg'] },
-  { naam: 'Charmante fermette', locatie: 'Zoersel', fotos: 3, ph: 'ph-4',
+  { naam: 'Charmante fermette', locatie: 'Zoersel', ph: 'ph-4',
     images: ['images/projecten/fermette-1.jpg','images/projecten/fermette-2.jpg','images/projecten/fermette-3.jpg'] },
-  { naam: 'Totaalrenovatie rijwoning', locatie: 'Heist-op-den-Berg', fotos: 5, ph: 'ph-2',
+  { naam: 'Totaalrenovatie rijwoning', locatie: 'Heist-op-den-Berg', ph: 'ph-2',
     images: ['images/projecten/rijwoning-1.jpg','images/projecten/rijwoning-2.jpg','images/projecten/rijwoning-3.jpg','images/projecten/rijwoning-4.jpg','images/projecten/rijwoning-5.jpg'] },
-  { naam: 'Herbestemming kantoor', locatie: 'Lier', fotos: 4, ph: 'ph-9',
+  { naam: 'Herbestemming kantoor', locatie: 'Lier', ph: 'ph-9',
     images: ['images/projecten/kantoor-1.jpg','images/projecten/kantoor-2.jpg','images/projecten/kantoor-3.jpg','images/projecten/kantoor-4.jpg'] },
-  { naam: 'Uitbreiding gezinswoning', locatie: 'Geel', fotos: 5, ph: 'ph-7',
+  { naam: 'Uitbreiding gezinswoning', locatie: 'Geel', ph: 'ph-7',
     images: ['images/projecten/uitbreiding-1.jpg','images/projecten/uitbreiding-2.jpg','images/projecten/uitbreiding-3.jpg','images/projecten/uitbreiding-4.jpg','images/projecten/uitbreiding-5.jpg'] },
-  { naam: 'Dakrenovatie met dakkapel', locatie: 'Turnhout', fotos: 3, ph: 'ph-5',
+  { naam: 'Dakrenovatie met dakkapel', locatie: 'Turnhout', ph: 'ph-5',
     images: ['images/projecten/dakkapel-1.jpg','images/projecten/dakkapel-2.jpg','images/projecten/dakkapel-3.jpg'] },
 ];
 
@@ -1308,7 +1252,9 @@ let viewerSourcePage = 'projecten';
 function buildViewerStrip(project) {
   const strip = document.getElementById('viewerStrip');
   strip.innerHTML = '';
-  for (let i = 0; i < project.fotos; i++) {
+  
+  // Maakt nu dynamisch evenveel thumbnails aan als er foto's in de array staan
+  for (let i = 0; i < project.images.length; i++) {
     const thumb = document.createElement('div');
     thumb.className = 'viewer-thumb' + (i === 0 ? ' active' : '');
     thumb.dataset.index = i;
@@ -1346,7 +1292,8 @@ function updateViewerMain() {
   const label = document.getElementById('viewerPlaceholderLabel');
   const counter = document.getElementById('viewerCounter');
 
-  counter.textContent = (i + 1) + ' / ' + project.fotos;
+  // De teller gebruikt nu de lengte van de array
+  counter.textContent = (i + 1) + ' / ' + project.images.length;
 
   const imgSrc = project.images && project.images[i] ? project.images[i] : null;
   if (imgSrc) {
@@ -1393,11 +1340,11 @@ function viewerGoTo(n) {
 }
 
 function viewerNext() {
-  viewerGoTo((currentPhotoIndex + 1) % currentProject.fotos);
+  viewerGoTo((currentPhotoIndex + 1) % currentProject.images.length);
 }
 
 function viewerPrev() {
-  viewerGoTo((currentPhotoIndex - 1 + currentProject.fotos) % currentProject.fotos);
+  viewerGoTo((currentPhotoIndex - 1 + currentProject.images.length) % currentProject.images.length);
 }
 
 // Keyboard nav
@@ -1416,7 +1363,6 @@ function renderGrid(containerId, projecten, sourcePage) {
     const item = document.createElement('div');
     item.className = 'photo-item reveal';
 
-    // Use real image if available, else colour placeholder
     const coverSrc = p.images && p.images[0] ? p.images[0] : null;
     const bgStyle = coverSrc
       ? `background-image: url('${coverSrc}'); background-size: cover; background-position: center;`
@@ -1437,7 +1383,7 @@ function renderGrid(containerId, projecten, sourcePage) {
   });
 }
 
-// ── Slideshow (auto-play, always running, touch-swipe on mobile) ──
+// ── Slideshow ──
 function initSlideshow(slideshowId, dotsId) {
   const ss = document.getElementById(slideshowId);
   if (!ss) return;
@@ -1465,7 +1411,6 @@ function initSlideshow(slideshowId, dotsId) {
   function next() { goTo(current + 1); }
   function resetTimer() { clearInterval(timer); timer = setInterval(next, 5000); }
 
-  // Always running – no pause on hover
   resetTimer();
 
   // Touch swipe support
